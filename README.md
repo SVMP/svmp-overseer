@@ -51,7 +51,7 @@ Status: 401 Unauthorized
 
 ### Authorized header token
 
-All requests with a URL prefix of `/api` **must** contain a request header in the form:
+All requests with a URL prefix of `/api` and `/admin` **must** contain a request header in the form:
 
 `svmp-authtoken: 'sometoken'`
 
@@ -89,6 +89,34 @@ Any calls to a URL with an `/admin` prefix, must pass a pre-generated token cont
 are not required to login and do not contain a database user account.  You can use Grunt to generate a services token.
 See `grunt service-token`
 
+
+#### Setup VM
+
+Setup the VM for user
+
+POST `/admin/vm`
+
+Request
+
+```
+  {
+    username: 'username'
+  }
+```
+
+Response:
+
+Status 200:
+
+```
+ {
+   vm_ip: 'ip address',
+   vm_port: port number of vm
+ }
+```
+
+Status 500:
+  May be a result of a problem creating/starting VM
 
 
 
