@@ -19,6 +19,11 @@ module.exports = {
         // default = 8001
         vm_port: 8001,
 
+        // Maximum length of a client session (in seconds) before it is
+        // forcibly disconnected.
+        // default = 21600 [6 hours]
+        max_session_length: 21600,
+
         // Enable SSL
         // default = false
         tls_proxy: false,

@@ -33,6 +33,8 @@ Status: 200
  {
    authtoken: 'sometoken',
    
+   expiresAt: 'future time in seconds'
+   
    server: {
       host: 'svmp-server.example.com'
       port: 8002

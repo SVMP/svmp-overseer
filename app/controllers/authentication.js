@@ -22,7 +22,8 @@
 var
     svmp = require('../../lib/svmp'),
     auth = require('../../lib/authentication'),
-    strategy = auth.loadStrategy();
+    strategy = auth.loadStrategy(),
+    toDate = require('to-date');
 
 
 exports.login = function(req,res) {
@@ -32,15 +33,11 @@ exports.login = function(req,res) {
             res.json(err,{msg: 'Error authenticating'});
         } else {
             var token = auth.makeToken(result);
-
-            /*svmp.cloud.setUpUser(useSessionObj)
-                .then(function (useSessionObj) {
-                }, function (err) {
-                    svmp.logger.error("setup.onLogin, " + err);
-                }).done();*/
+            var max_session = svmp.config.get('settings:max_session_length');
 
             var responseObj = {
                 authtoken: token,
+                expiresAt: toDate(max_session).seconds.fromNow,
                 server: {
                     host: "svmp-server.example.com",
                     port: 8002

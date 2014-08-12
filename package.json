@@ -17,7 +17,8 @@
         "mongoose": "~3.8.8",
         "grunt-cli": "~0.1.13",
         "winston": "~0.7.3",
-        "q": "~1.0.1"
+        "q": "~1.0.1",
+        "to-date": "latest"
     },
     "devDependencies": {
         "mocha": "latest",
