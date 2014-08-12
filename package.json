@@ -1,0 +1,30 @@
+{
+    "name": "svmp-rest-api",
+    "description": "Secure Virtual Mobile Platform REST api",
+    "author": "Dave Bryson",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "engines": {
+        "node": "0.10.x",
+        "npm": "1.4.x"
+    },
+    "private": true,
+    "dependencies": {
+        "svmp-user-model": "git+https://github.com/SVMP/svmp-user-model.git",
+        "express": "~4.2.0",
+        "body-parser": "~1.0.0",
+        "jsonwebtoken": "~0.4.1",
+        "mongoose": "~3.8.8",
+        "grunt-cli": "~0.1.13",
+        "winston": "~0.7.3",
+        "q": "~1.0.1"
+    },
+    "devDependencies": {
+        "mocha": "latest",
+        "supertest" : "latest",
+        "grunt": "~0.4.5",
+        "grunt-env": "~0.4.1",
+        "grunt-mocha-test": "~0.10.0",
+        "load-grunt-tasks": "~0.4.0"
+    }
+}
