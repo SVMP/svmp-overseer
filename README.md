@@ -108,7 +108,7 @@ Response:
 
 Status 200:
 
-```
+```javascript
  {
    vm_ip: 'ip address',
    vm_port: port number of vm
