@@ -1,10 +1,11 @@
 var
     assert = require('assert'),
-    app = require('supertest')('http://localhost:3000');
-
+    app = require('supertest')('http://localhost:3000'),
+    tokenHelper = require('../../lib/authentication').makeToken,
+    user_token = tokenHelper({role: 'user'}),
+    admin_token = tokenHelper({role: 'admin'});
 
 describe("Users", function () {
-
     /*it('should return list of users if request has a valid token', function (done) {
         app.post('/login')
             .send({username: 'dave', password: 'dave12345678'})
@@ -49,5 +50,20 @@ describe("Users", function () {
                     .end(done);
             });
     });
+
+
+    it('should pass with role of admin', function(done) {
+
+        app.get('/admin/test')
+            .set('svmp-authtoken',admin_token)
+            .expect(200,done);
+    });
+
+    it('should should fail without admin role', function(done) {
+        app.get('/admin/test')
+            .set('svmp-authtoken',user_token)
+            .expect(401,done);
+    });
+
 
 });

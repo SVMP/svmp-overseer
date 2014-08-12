@@ -34,7 +34,7 @@ var
 };*/
 
 exports.changeUserPassword = function(req,res) {
-    var un = req.username;
+    var un = req.user.username;
     var oldPassword = req.body.old_password;
     var newPassword = req.body.new_password;
     svmp.users.changeUserPassword(un,oldPassword,newPassword,function(err,result) {

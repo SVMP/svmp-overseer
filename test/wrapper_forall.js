@@ -25,6 +25,9 @@ before(function(done){
     svmp.init();
     svmp.users.clearUsers(function (err) {
         svmp.users.createUser('dave', 'dave12345678', 'dave@here.com','a', function (err,r) {
+            //svmp.users.createAdminUser('bob', 'bob12345678', 'bob@here.com','a', function (err,r) {
+            //    done();
+            //});
             done();
         });
     });

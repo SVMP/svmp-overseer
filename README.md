@@ -81,6 +81,13 @@ Status 400  Bad Request
 Status 401 Unauthorized
 
 
+### Services
+
+Any calls to a URL with an `/admin` prefix, must pass a pre-generated token containing the role `admin`. These services
+are not required to login and do not contain a database user account.  You can use Grunt to generate a services token.
+See `grunt service-token`
+
+
 
 
 

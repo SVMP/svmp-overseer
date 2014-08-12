@@ -34,6 +34,8 @@ app.use(bodyParser.urlencoded());
 // Set global token check on all URLs prefixed with /api
 app.all('/api/*',auth.checkToken);
 
+app.all('/admin/*',auth.checkAdminToken);
+
 // Load routes
 require('./app/routes/index')(app);
 

@@ -23,6 +23,7 @@ module.exports = function (app) {
 
     var auth = require('../../app/controllers/authentication');
     var users = require('../../app/controllers/users');
+    var admin = require('../../app/controllers/admin');
 
     // authentication
     app.route('/login')
@@ -30,6 +31,10 @@ module.exports = function (app) {
 
     app.route('/api/user/passwd')
         .post(users.changeUserPassword);
+
+
+    // For testing right now
+    app.route('/admin/test').get(admin.testAdmin);
 
 
     // Users

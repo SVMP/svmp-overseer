@@ -41,6 +41,15 @@ module.exports = function (grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
 
+    grunt.registerTask('service-token', 'Make Token', function () {
+        var
+            config = require('./config/config-local'),
+            jwt = require('jsonwebtoken');
+
+        var token = jwt.sign({expires: '', role: 'admin'}, config.settings.jwtSecret);
+        console.log(token);
+    });
+
     // Default task(s).
     grunt.registerTask('default', ['mochaTest']);
 };
