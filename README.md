@@ -31,7 +31,7 @@ Status: 200
 
 authtoken is a JWT token with a payload that includes: username, role, expiresAt
 
-```
+```javascript
  {
    authtoken: 'sometoken',
    
@@ -111,7 +111,7 @@ Status 200:
 ```javascript
  {
    vm_ip: 'ip address',
-   vm_port: port number of vm
+   vm_port: 'port number of vm'
  }
 ```
 
