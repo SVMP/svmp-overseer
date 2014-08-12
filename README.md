@@ -44,12 +44,34 @@ All requests with a URL prefix of `/api` **must** contain a request header in th
 
 valid tokens are returned on successful login. See login Response above.
 
-### Users
 
-GET `/api/users`
+### User
 
 
-### Account
+#### Change Password
 
-POST `/api/user/change_passwd`
+POST `/api/user/passwd`
+
+Request
+
+```
+ {
+   old_password: 'hello',
+   new_password: 'thisismynewsecurepassword'
+ }
+```
+
+Response:
+
+Status 200  ok
+
+Status 400  Bad Request
+
+Status 401 Unauthorized
+
+
+
+
+
+
 

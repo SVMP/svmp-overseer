@@ -5,7 +5,7 @@ var
 
 describe("Users", function () {
 
-    it('should return list of users if request has a valid token', function (done) {
+    /*it('should return list of users if request has a valid token', function (done) {
         app.post('/login')
             .send({username: 'dave', password: 'dave12345678'})
             .end(function(err,res){
@@ -28,6 +28,24 @@ describe("Users", function () {
                 app.get('/api/users')
                     .set('svmp-authtoken','badtoken')
                     .expect(401)
+                    .end(done);
+            });
+    });*/
+
+    it('should change users password', function(done) {
+        app.post('/login')
+            .send({username: 'dave', password: 'dave12345678'})
+            .end(function(err,res){
+                // Now check they can access stuff with token
+                app.post('/api/user/passwd')
+                    .set('svmp-authtoken',res.body.authtoken)
+                    .send({
+                        old_password: 'dave12345678',
+                        new_password: 'dave22222222'
+                    })
+                    .expect(function(res){
+                        assert.equal(res.statusCode,200);
+                    })
                     .end(done);
             });
     });

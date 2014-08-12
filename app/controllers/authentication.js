@@ -26,13 +26,18 @@ var
 
 
 exports.login = function(req,res) {
-
     // use loaded strategy for authentication
     strategy(req,function(err,result) {
         if(err) {
             res.json(err,{msg: 'Error authenticating'});
         } else {
             var token = auth.makeToken(result);
+
+            /*svmp.cloud.setUpUser(useSessionObj)
+                .then(function (useSessionObj) {
+                }, function (err) {
+                    svmp.logger.error("setup.onLogin, " + err);
+                }).done();*/
 
             var responseObj = {
                 authtoken: token,

@@ -23,8 +23,7 @@ var
     svmp = require('../../lib/svmp');
 
 
-exports.listUsers = function(req,res) {
-    //console.log(req.username);
+/*exports.listUsers = function(req,res) {
     svmp.users.listUsers(function(err,results) {
         if(err) {
             res.json(404,{msg: 'Error'})
@@ -32,4 +31,19 @@ exports.listUsers = function(req,res) {
             res.json(200,{users: results})
         }
     })
+};*/
+
+exports.changeUserPassword = function(req,res) {
+    var un = req.username;
+    var oldPassword = req.body.old_password;
+    var newPassword = req.body.new_password;
+    svmp.users.changeUserPassword(un,oldPassword,newPassword,function(err,result) {
+        if(err) {
+            res.json(404,{msg: 'Error'})
+        } else {
+            res.json(200,{users: result})
+        }
+    });
 };
+
+

@@ -28,10 +28,17 @@ module.exports = function (app) {
     app.route('/login')
         .post(auth.login);
 
+    app.route('/api/user/passwd')
+        .post(users.changeUserPassword);
+
 
     // Users
-    app.route('/api/users')
-        .get(users.listUsers)
+    //app.route('/api/users')
+    //    .get(users.listUsers);
+
+    //app.route('/api/user/vm')
+    //    .get(users.setUpVm);
+
 
 
 };
