@@ -32,12 +32,13 @@ exports.login = function(req,res) {
         if(err) {
             res.json(err,{msg: 'Error authenticating'});
         } else {
-            var token = auth.makeToken(result);
+
             var max_session = svmp.config.get('settings:max_session_length');
+            result.expiresAt = toDate(max_session).seconds.fromNow;
+            var token = auth.makeToken(result);
 
             var responseObj = {
                 authtoken: token,
-                expiresAt: toDate(max_session).seconds.fromNow,
                 server: {
                     host: "svmp-server.example.com",
                     port: 8002

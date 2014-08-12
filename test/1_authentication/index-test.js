@@ -10,7 +10,6 @@ describe("Authentication", function () {
             .send({username: 'dave', password: 'dave12345678'})
             .expect(function(res) {
                 assert.ok(res.body.authtoken);
-                assert.ok(res.body.expiresAt);
                 assert.ok(res.body.webrtc);
             })
             .expect(200, done);

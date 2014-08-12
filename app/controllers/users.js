@@ -34,6 +34,7 @@ var
 };*/
 
 exports.changeUserPassword = function(req,res) {
+    //console.log("Expires at: ", req.user.expiresAt);
     var un = req.user.username;
     var oldPassword = req.body.old_password;
     var newPassword = req.body.new_password;

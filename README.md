@@ -29,11 +29,11 @@ Response:
 
 Status: 200
 
+authtoken is a JWT token with a payload that includes: username, role, expiresAt
+
 ```
  {
    authtoken: 'sometoken',
-   
-   expiresAt: 'future time in seconds'
    
    server: {
       host: 'svmp-server.example.com'
@@ -55,7 +55,7 @@ All requests with a URL prefix of `/api` **must** contain a request header in th
 
 `svmp-authtoken: 'sometoken'`
 
-valid tokens are returned on successful login. See login Response above.
+valid tokens are returned on successful login. See login Response above. Token payload includes: username, role, expiresAt
 
 
 ### User
