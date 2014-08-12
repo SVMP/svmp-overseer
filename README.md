@@ -21,8 +21,8 @@ POST `/login`
 
 Request:
 
-```
- {username: 'un', password: 'pw }
+```javascript
+ {username: 'un', password: 'pw' }
 ```
 
 Response:
@@ -67,7 +67,7 @@ POST `/api/user/passwd`
 
 Request
 
-```
+```javascript
  {
    old_password: 'hello',
    new_password: 'thisismynewsecurepassword'
@@ -98,7 +98,7 @@ POST `/admin/vm`
 
 Request
 
-```
+```javascript
   {
     username: 'username'
   }
