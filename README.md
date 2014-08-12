@@ -1,6 +1,17 @@
 
 # SVMP REST API
 
+## Setup
+
+* Install dependencies: `> npm install` 
+* You need mongodb
+
+## Run tests
+
+* Start mongodb
+* `> node server.js`
+* `> grunt`
+
 
 ## API
 
