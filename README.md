@@ -19,13 +19,16 @@ Response:
 Status: 200
 
 ```
- {authtoken: 'sometoken',
+ {
+   authtoken: 'sometoken',
+   
    server: {
       host: 'svmp-server.example.com'
       port: 8002
    },
+   
    webrtc: {}
-  }
+ }
 ```
 
 Status: 400  Bad Request
