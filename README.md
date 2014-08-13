@@ -91,13 +91,34 @@ Services do not require a login.  Clients must be pre-configured with proper aut
 You can use Grunt to generate a services token. See `grunt service-token`
 
 #### User(s)
+##### List Users
+
+GET `/services/users`
+
+##### Add User
+
+POST `/services/user`
+
+##### Delete User
+
+DELETE `/services/user`
+
+##### Update User
+
+PUT `/services/user`
+
+##### Find User
+
+GET `/services/user/:username`
+
+##### Update User
 
 #### Cloud
 ##### Setup VM
 
 Setup a VM for user. Usually done during login
 
-POST `/services/setupVm`
+POST `/services/cloud/setupVm`
 
 **Request**
 
@@ -120,6 +141,34 @@ POST `/services/setupVm`
 
 *500*
   May be a result of a problem creating/starting VM
+  
+##### List Device Types
+
+GET `/services/cloud/devices`
+
+##### List Volumes
+
+GET `/services/cloud/volumes`
+
+##### Create Volume for User
+
+POST `/services/cloud/volume`
+
+##### Assign Volume to User
+
+POST `/services/cloud/assignVolume
+
+##### Create/Start VM for User
+
+POST `/services/cloud/startVM`
+
+##### Register VM to User
+
+POST `/services/cloud/assignVm`
+
+##### List Images
+
+GET `/services/cloud/images`
 
 
 
