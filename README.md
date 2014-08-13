@@ -66,7 +66,9 @@ Unauthorized
 
 #### Change Password
 
-POST `/api/user/passwd`
+POST `/api/user/changePasswd`
+
+Change Password
 
 **Request**
 
