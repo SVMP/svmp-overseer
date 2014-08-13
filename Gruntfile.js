@@ -41,7 +41,7 @@ module.exports = function (grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
 
-    grunt.registerTask('service-token', 'Make Token', function () {
+    grunt.registerTask('create-service-token', 'Make Token', function () {
         var
             config = require('./config/config-local'),
             jwt = require('jsonwebtoken');

@@ -21,28 +21,28 @@
 
 module.exports = function (app) {
 
-    var auth = require('../../app/controllers/authentication');
     var users = require('../../app/controllers/users');
-    var admin = require('../../app/controllers/admin');
+    var services = require('../controllers/services');
 
-    // authentication
+    /******  User Clients ******/
+
     app.route('/login')
-        .post(auth.login);
+        .post(users.login);
 
-    app.route('/api/user/passwd')
+    // auth token required in header for access
+    app.route('/api/user/changePasswd')
         .post(users.changeUserPassword);
 
 
-    // For testing right now
-    app.route('/admin/test').get(admin.testAdmin);
+    /****** Services ******/
+
+    app.route('/services/users')
+        .get(services.listUsers);
+
+    app.route('/services/user/:username')
+        .get(services.getUser);
 
 
-    // Users
-    //app.route('/api/users')
-    //    .get(users.listUsers);
-
-    //app.route('/api/user/vm')
-    //    .get(users.setUpVm);
 
 
 

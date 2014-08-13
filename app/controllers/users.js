@@ -20,29 +20,67 @@
 'use strict';
 
 var
-    svmp = require('../../lib/svmp');
+    svmp = require('../../lib/svmp'),
+    auth = require('../../lib/authentication'),
+    strategy = auth.loadStrategy(),
+    toDate = require('to-date');
 
-
-/*exports.listUsers = function(req,res) {
-    svmp.users.listUsers(function(err,results) {
-        if(err) {
-            res.json(404,{msg: 'Error'})
+/**
+ * Login/Authenticate User.
+ *
+ * Loads authentication strategy based on config file settings (TLS, PAM, DB)
+ * and checks if password change is needed.
+ *
+ * On Success, returns a JSON payload with a JWT token that the client must send
+ * as a header field in subsequent requests to get access.
+ * @param req
+ * @param res
+ */
+exports.login = function(req,res) {
+    // use loaded strategy for authentication
+    strategy(req,function(errCode,result) {
+        if(errCode) {
+            res.json(errCode,{msg: 'Error authenticating'});
         } else {
-            res.json(200,{users: results})
-        }
-    })
-};*/
 
+            // Setup token
+            var max_session = svmp.config.get('settings:max_session_length');
+            result.expiresAt = toDate(max_session).seconds.fromNow;
+            var token = auth.makeToken(result);
+
+            // Response object
+            var responseObj = {
+                authtoken: token,
+                server: {
+                    host: "svmp-server.example.com",
+                    port: 8002
+                },
+                webrtc: svmp.config.get("webrtc")
+            };
+
+            res.json(200,responseObj);
+        }
+    });
+};
+
+
+/**
+ * Change current User password
+ * You'll never get here without a valid JWT token in the header
+ * @param req
+ * @param res
+ */
 exports.changeUserPassword = function(req,res) {
-    //console.log("Expires at: ", req.user.expiresAt);
-    var un = req.user.username;
+    var un = req.user.username; // Get username from token (done in Express)
+
     var oldPassword = req.body.old_password;
     var newPassword = req.body.new_password;
-    svmp.users.changeUserPassword(un,oldPassword,newPassword,function(err,result) {
-        if(err) {
-            res.json(404,{msg: 'Error'})
+
+    svmp.users.changeUserPassword(un,oldPassword,newPassword,function(errCode,result) {
+        if(errCode) {
+            res.json(errCode,{msg: 'Error'}); // Bad request
         } else {
-            res.json(200,{users: result})
+            res.json(200,result);
         }
     });
 };

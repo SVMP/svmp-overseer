@@ -26,15 +26,17 @@ var
     auth = require('./lib/authentication'),
     app = express();
 
+// Bootup SVMP object
 svmp.init();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
-// Set global token check on all URLs prefixed with /api
+// Check Token for requests to /api/*
 app.all('/api/*',auth.checkToken);
 
-app.all('/admin/*',auth.checkAdminToken);
+// Check Token for admin role to /services/*
+app.all('/services/*',auth.checkAdminToken);
 
 // Load routes
 require('./app/routes/index')(app);
@@ -45,7 +47,7 @@ app.use(function (err, req, res, next) {
     if (!err) return next();
 
     // Log it
-    console.error(err.stack);
+    svmp.logger.error(err.stack);
 
     return res.json(500, {
         msg: "Oops, there was an error.  Please try again."
@@ -59,7 +61,9 @@ app.use(function (req, res) {
 
 var port = svmp.config.get('settings:port');
 
+// TODO: Need to check for TLS here...
 app.listen(port);
+
 svmp.logger.info('SVMP REST API running on port %d',port);
 
 

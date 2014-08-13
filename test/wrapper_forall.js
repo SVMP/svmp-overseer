@@ -16,6 +16,9 @@
  * author Dave Bryson
  *
  */
+
+'use strict';
+
 var
     svmp = require('../lib/svmp');
 
@@ -23,14 +26,34 @@ var
 
 before(function(done){
     svmp.init();
+
     svmp.users.clearUsers(function (err) {
-        svmp.users.createUser('dave', 'dave12345678', 'dave@here.com','a', function (err,r) {
-            //svmp.users.createAdminUser('bob', 'bob12345678', 'bob@here.com','a', function (err,r) {
-            //    done();
-            //});
-            done();
+
+        var goodUser = {
+            username: 'dave',
+            password: 'dave12345678',
+            email: 'dave@here.com',
+            password_change_needed: false,
+            device_type: 'a_device',
+            volume_id: ''
+        };
+
+        var passwordChangeNeededUser = {
+            username: 'bob',
+            password: 'bob12345678',
+            email: 'bob@here.com',
+            password_change_needed: true,
+            device_type: 'a_device',
+            volume_id: ''
+        };
+
+        svmp.users.addUserToDb(goodUser, function() {
+            svmp.users.addUserToDb(passwordChangeNeededUser, function() {
+                done();
+            });
         });
     });
+
 });
 
 after(function (done) {

@@ -56,9 +56,11 @@ authtoken is a JWT token with a payload that includes: username, role, expiresAt
  }
 ```
 
-*400* Bad Request
+*400* Bad Request - Missing required fields
 
 *401* Unauthorized
+
+*403* Forbidden - set if the user needs to change password
 
 #### Change Password
 
@@ -88,7 +90,7 @@ Change Password
 
 Requests to URLs with a `/services` prefix *must* have the role `admin` in the authentication token.  Requests to 
 Services do not require a login.  Clients must be pre-configured with proper authentication tokens.
-You can use Grunt to generate a services token. See `grunt service-token`
+You can use Grunt to generate a services token. See `grunt create-service-token`
 
 #### User(s)
 ##### List Users
@@ -156,7 +158,7 @@ POST `/services/cloud/volume`
 
 ##### Assign Volume to User
 
-POST `/services/cloud/assignVolume
+POST `/services/cloud/assignVolume`
 
 ##### Create/Start VM for User
 
