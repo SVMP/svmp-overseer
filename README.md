@@ -87,67 +87,6 @@ Change Password
 
 ### Services
 
-
-
-
-
-
-
-
-
-## API
-
-### Authorized header token
-
-All requests with a URL prefix of `/api` and `/services` **must** contain a request header in the form:
-
-`svmp-authtoken : 'sometoken'`
-
-valid tokens are returned on successful login. Token payload includes: username, role, expiresAt
-
-### Authenticate
-
-POST `/login` 
-
-Request:
-
-```javascript
- {username: 'un', password: 'pw' }
-```
-
-Response:
-
-Status: 200
-
-authtoken is a JWT token with a payload that includes: username, role, expiresAt
-
-```javascript
- {
-   authtoken: 'sometoken',
-   
-   server: {
-      host: 'svmp-server.example.com'
-      port: 8002
-   },
-   
-   webrtc: {}
- }
-```
-
-Status: 400  Bad Request
-
-Status: 401 Unauthorized
-
-
-### Authorized header token
-
-All requests with a URL prefix of `/api` and `/admin` **must** contain a request header in the form:
-
-`svmp-authtoken: 'sometoken'`
-
-valid tokens are returned on successful login. See login Response above. Token payload includes: username, role, expiresAt
-
-
 ### User
 
 
@@ -175,18 +114,20 @@ Status 401 Unauthorized
 
 ### Services
 
-Any calls to a URL with an `/admin` prefix, must pass a pre-generated token containing the role `admin`. These services
-are not required to login and do not contain a database user account.  You can use Grunt to generate a services token.
-See `grunt service-token`
+Requests to URLs with a `/services` prefix *must* have the role `admin` in the authentication token.  Requests to 
+Services do not require a login.  Clients must be pre-configured with proper authentication tokens.
+You can use Grunt to generate a services token. See `grunt service-token`
 
+### User(s)
 
+### Cloud
 #### Setup VM
 
-Setup the VM for user
+Setup a VM for user. Usually done during login
 
-POST `/admin/vm`
+POST `/services/setupVm`
 
-Request
+**Request**
 
 ```javascript
   {
@@ -194,9 +135,9 @@ Request
   }
 ```
 
-Response:
+**Response**
 
-Status 200:
+*200*
 
 ```javascript
  {
@@ -205,7 +146,7 @@ Status 200:
  }
 ```
 
-Status 500:
+*500*
   May be a result of a problem creating/starting VM
 
 
