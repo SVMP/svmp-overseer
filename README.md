@@ -23,7 +23,7 @@ All requests with a URL prefix of `/api` and `/services` **must** contain a requ
 
 valid tokens are returned on successful login. Token payload includes: username, role, expiresAt
 
-### Users
+### User Clients
 #### Login
 
 POST `/login`
@@ -84,44 +84,16 @@ Change Password
 *401* Unauthorized
 
 
-
-### Services
-
-### User
-
-
-#### Change Password
-
-POST `/api/user/passwd`
-
-Request
-
-```javascript
- {
-   old_password: 'hello',
-   new_password: 'thisismynewsecurepassword'
- }
-```
-
-Response:
-
-Status 200  ok
-
-Status 400  Bad Request
-
-Status 401 Unauthorized
-
-
 ### Services
 
 Requests to URLs with a `/services` prefix *must* have the role `admin` in the authentication token.  Requests to 
 Services do not require a login.  Clients must be pre-configured with proper authentication tokens.
 You can use Grunt to generate a services token. See `grunt service-token`
 
-### User(s)
+#### User(s)
 
-### Cloud
-#### Setup VM
+#### Cloud
+##### Setup VM
 
 Setup a VM for user. Usually done during login
 
