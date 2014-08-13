@@ -41,17 +41,17 @@ Authenticate the User
 Status Code | Message 
 :----------:|:------:
 200         | ```javascript
-               {
-                 authtoken: 'sometoken',
-                 
-                 server: {
-                    host: 'svmp-server.example.com'
-                    port: 8002
-                 },
-                 
-                 webrtc: {}
-               }
-              ```
+            |   {
+            |     authtoken: 'sometoken',
+            |     
+            |     server: {
+            |        host: 'svmp-server.example.com'
+            |        port: 8002
+            |     },
+            |     
+            |     webrtc: {}
+            |   }
+            |  ```
 ------------|--------
 400         | Bad Request
 ------------|--------
