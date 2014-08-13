@@ -38,25 +38,6 @@ Authenticate the User
 
 **Response**
 
-Status Code | Message 
-:----------:|:------:
-200         | ```javascript
-            |   {
-            |     authtoken: 'sometoken',
-            |     
-            |     server: {
-            |        host: 'svmp-server.example.com'
-            |        port: 8002
-            |     },
-            |     
-            |     webrtc: {}
-            |   }
-            |  ```
-------------|--------
-400         | Bad Request
-------------|--------
-401         | Unauthorized
-
 
 *Status: 200*
 
@@ -75,10 +56,12 @@ authtoken is a JWT token with a payload that includes: username, role, expiresAt
  }
 ```
 
-*Status: 400*  
+*Status: 400*
+  
 Bad Request
 
-*Status: 401* 
+*Status: 401*
+ 
 Unauthorized
 
 #### Change Password
