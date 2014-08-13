@@ -6,3 +6,4 @@ app/tests/coverage/
 .idea/
 *.iml
 config-local.js
+TODO.txt

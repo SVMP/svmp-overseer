@@ -47,11 +47,13 @@ before(function(done){
             volume_id: ''
         };
 
+        // Add 2 users for testing...
         svmp.users.addUserToDb(goodUser, function() {
             svmp.users.addUserToDb(passwordChangeNeededUser, function() {
                 done();
             });
         });
+
     });
 
 });

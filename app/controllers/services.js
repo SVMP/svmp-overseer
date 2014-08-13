@@ -27,7 +27,6 @@ exports.setUpVm = function(req,res) {
 };
 
 
-
 exports.listUsers = function(req,res) {
     svmp.users.listUsers(function(errCode,users) {
         if(errCode) {

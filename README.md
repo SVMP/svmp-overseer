@@ -97,6 +97,18 @@ You can use Grunt to generate a services token. See `grunt create-service-token`
 
 GET `/services/users`
 
+**Response**
+
+*200*
+
+List of users
+
+```javascript
+ {users: [{},{}]
+```
+
+*500* Error encountered listing users
+
 ##### Add User
 
 POST `/services/user`
@@ -112,6 +124,20 @@ PUT `/services/user`
 ##### Find User
 
 GET `/services/user/:username`
+
+where `:username` is the actual user's name
+
+**Response**
+
+*200*
+
+```javascript
+ { user: {} }
+```
+
+*500* Error encountered getting User
+
+*400* Bad Request (maybe missing username)
 
 ##### Update User
 
