@@ -56,13 +56,9 @@ authtoken is a JWT token with a payload that includes: username, role, expiresAt
  }
 ```
 
-*400*
-  
-Bad Request
+*400* Bad Request
 
-*401*
- 
-Unauthorized
+*401* Unauthorized
 
 #### Change Password
 
@@ -81,17 +77,11 @@ Change Password
 
 **Response**
 
-*200*  
+*200*  ok
 
-ok
+*400*  Bad Request
 
-*400*  
-
-Bad Request
-
-*401*
-
-Unauthorized
+*401* Unauthorized
 
 
 
