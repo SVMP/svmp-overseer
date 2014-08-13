@@ -39,7 +39,7 @@ Authenticate the User
 **Response**
 
 
-*Status: 200*
+*200*
 
 authtoken is a JWT token with a payload that includes: username, role, expiresAt
 
@@ -56,11 +56,11 @@ authtoken is a JWT token with a payload that includes: username, role, expiresAt
  }
 ```
 
-*Status: 400*
+*400*
   
 Bad Request
 
-*Status: 401*
+*401*
  
 Unauthorized
 
@@ -81,14 +81,17 @@ Change Password
 
 **Response**
 
-*Status 200*  
+*200*  
+
 ok
 
-*Status 400*  
+*400*  
+
 Bad Request
 
-*Status 401*
- Unauthorized
+*401*
+
+Unauthorized
 
 
 
