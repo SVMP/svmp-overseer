@@ -15,6 +15,98 @@
 
 ## API
 
+### Authorized header token
+
+All requests with a URL prefix of `/api` and `/services` **must** contain a request header in the form:
+
+`svmp-authtoken : 'sometoken'`
+
+valid tokens are returned on successful login. Token payload includes: username, role, expiresAt
+
+### Users
+#### Login
+
+POST `/login`
+
+Authenticate the User
+
+**Request**
+
+``javascript
+ {username: 'un', password: 'pw' }
+```
+
+**Response**
+
+*Status: 200*
+
+authtoken is a JWT token with a payload that includes: username, role, expiresAt
+
+```javascript
+ {
+   authtoken: 'sometoken',
+   
+   server: {
+      host: 'svmp-server.example.com'
+      port: 8002
+   },
+   
+   webrtc: {}
+ }
+```
+
+*Status: 400*  
+Bad Request
+
+*Status: 401* 
+Unauthorized
+
+#### Change Password
+
+POST `/api/user/passwd`
+
+**Request**
+
+```javascript
+ {
+   old_password: 'hello',
+   new_password: 'thisismynewsecurepassword'
+ }
+```
+
+**Response**
+
+*Status 200*  
+ok
+
+*Status 400*  
+Bad Request
+
+*Status 401*
+ Unauthorized
+
+
+
+### Services
+
+
+
+
+
+
+
+
+
+## API
+
+### Authorized header token
+
+All requests with a URL prefix of `/api` and `/services` **must** contain a request header in the form:
+
+`svmp-authtoken : 'sometoken'`
+
+valid tokens are returned on successful login. Token payload includes: username, role, expiresAt
+
 ### Authenticate
 
 POST `/login` 
