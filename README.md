@@ -32,11 +32,31 @@ Authenticate the User
 
 **Request**
 
-``javascript
+```javascript
  {username: 'un', password: 'pw' }
 ```
 
 **Response**
+
+Status Code | Message 
+:----------:|:------:
+200         | ```javascript
+               {
+                 authtoken: 'sometoken',
+                 
+                 server: {
+                    host: 'svmp-server.example.com'
+                    port: 8002
+                 },
+                 
+                 webrtc: {}
+               }
+              ```
+------------|--------
+400         | Bad Request
+------------|--------
+401         | Unauthorized
+
 
 *Status: 200*
 
