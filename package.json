@@ -18,7 +18,8 @@
         "grunt-cli": "~0.1.13",
         "winston": "~0.7.3",
         "q": "~1.0.1",
-        "to-date": "latest"
+        "to-date": "latest",
+        "node-uuid": "~1.4.1"
     },
     "devDependencies": {
         "mocha": "latest",

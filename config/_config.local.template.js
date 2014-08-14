@@ -3,6 +3,7 @@ module.exports = {
     settings: {
 
         jwtSecret: 'make this a long secret code',
+        rest_server_url: 'http://localhost:3000',
 
 
         // MongoDB database url

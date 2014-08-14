@@ -23,7 +23,9 @@ var
     svmp = require('../../lib/svmp'),
     auth = require('../../lib/authentication'),
     strategy = auth.loadStrategy(),
-    toDate = require('to-date');
+    toDate = require('to-date'),
+    uuid = require('node-uuid'),
+    util = require('util');
 
 /**
  * Login/Authenticate User.
@@ -45,7 +47,12 @@ exports.login = function(req,res) {
 
             // Setup token
             var max_session = svmp.config.get('settings:max_session_length');
-            result.expiresAt = toDate(max_session).seconds.fromNow;
+
+            // Additional JWT content
+            result.exp = toDate(max_session).seconds.fromNow;
+            result.iss = svmp.config.get('settings:rest_server_url');
+            result.jti = util.format('%s-%s',result.username,uuid.v4());
+
             var token = auth.makeToken(result);
 
             // Response object

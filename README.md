@@ -41,12 +41,26 @@ Authenticate the User
 
 *200*
 
-authtoken is a JWT token with a payload that includes: username, role, expiresAt
+token is a JWT token with a payload that includes:
 
 ```javascript
  {
-   authtoken: 'sometoken',
-   
+   'sub': 'user._id',
+   'username': 'username',
+   'role': 'user|admin',
+   'iss': 'https:// restserver.com',
+   'exp': 'expiration time',
+   'jti': 'username-uuid'
+ }
+```
+
+```javascript
+ {
+   sessionInfo: {
+                  token: token,
+                  maxLength: max_session,
+                  gracePeriod: svmp.config.get('settings:session_token_ttl')
+   },
    server: {
       host: 'svmp-server.example.com'
       port: 8002
@@ -55,6 +69,8 @@ authtoken is a JWT token with a payload that includes: username, role, expiresAt
    webrtc: {}
  }
 ```
+
+
 
 *400* Bad Request - Missing required fields
 
@@ -72,7 +88,7 @@ Change Password
 
 ```javascript
  {
-   old_password: 'hello',
+   password: 'hello',
    new_password: 'thisismynewsecurepassword'
  }
 ```

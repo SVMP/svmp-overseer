@@ -35,7 +35,7 @@ describe("Client Users", function () {
             app.post('/login')
                 .send({username: 'dave', password: 'dave12345678'})
                 .expect(function (res) {
-                    assert.ok(res.body.authtoken);
+                    assert.ok(res.body.sessionInfo.token);
                     assert.ok(res.body.webrtc);
                 })
                 .expect(200, done);
@@ -70,7 +70,7 @@ describe("Client Users", function () {
             app.post('/api/user/changePasswd')
                 .set('svmp-authtoken', user_token)
                 .send({
-                    old_password: 'dave12345678',
+                    password: 'dave12345678',
                     new_password: 'dave22222222'
                 })
                 .expect(function (res) {
