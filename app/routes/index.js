@@ -36,14 +36,20 @@ module.exports = function (app) {
 
     /****** Services ******/
 
+    /** User **/
     app.route('/services/users')
         .get(services.listUsers);
 
     app.route('/services/user/:username')
-        .get(services.getUser);
+        .get(services.getUser)
+        .delete(services.deleteUser)
+        .put(services.updateUser);
 
+    app.route('/services/user')
+        .post(services.addUser);
 
-
-
+    /** Cloud **/
+    app.route('/services/cloud/setupVm/:username')
+        .get(services.setUpVm);
 
 };

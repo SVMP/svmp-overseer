@@ -24,35 +24,56 @@ var
 
 /** Wrapper for all tests */
 
-before(function(done){
-    svmp.init();
+beforeEach(function(done){
 
-    svmp.users.clearUsers(function (err) {
 
-        var goodUser = {
+    svmp.User.remove({}, function (err) {
+
+        /*var goodUser = new svmp.User({
             username: 'dave',
             password: 'dave12345678',
             email: 'dave@here.com',
             password_change_needed: false,
             device_type: 'a_device',
             volume_id: ''
-        };
+        });
 
-        var passwordChangeNeededUser = {
+        var passwordChangeNeededUser = new svmp.User({
             username: 'bob',
             password: 'bob12345678',
             email: 'bob@here.com',
             password_change_needed: true,
             device_type: 'a_device',
             volume_id: ''
-        };
+        });*/
+
+        new svmp.User({
+            username: 'dave',
+            password: 'dave12345678',
+            email: 'dave@here.com',
+            password_change_needed: false,
+            device_type: 'a_device',
+            volume_id: ''
+        }).save(function(){
+                new svmp.User({
+                    username: 'bob',
+                    password: 'bob12345678',
+                    email: 'bob@here.com',
+                    password_change_needed: true,
+                    device_type: 'a_device',
+                    volume_id: ''
+                }).save(function(){
+                done();
+            })
+        });
+
 
         // Add 2 users for testing...
-        svmp.users.addUserToDb(goodUser, function() {
+        /*svmp.users.addUserToDb(goodUser, function() {
             svmp.users.addUserToDb(passwordChangeNeededUser, function() {
                 done();
             });
-        });
+        });*/
 
     });
 

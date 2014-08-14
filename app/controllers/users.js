@@ -76,13 +76,30 @@ exports.changeUserPassword = function(req,res) {
     var oldPassword = req.body.old_password;
     var newPassword = req.body.new_password;
 
-    svmp.users.changeUserPassword(un,oldPassword,newPassword,function(errCode,result) {
-        if(errCode) {
-            res.json(errCode,{msg: 'Error'}); // Bad request
-        } else {
-            res.json(200,result);
+    svmp.User.findOne({username: un}, function (err, user) {
+        if (err) {
+            res.send(400); // Bad Request
+        }
+        else if (user && user.authenticate(oldPassword)) {
+
+            user.password = newPassword;
+            user.password_change_needed = false;
+
+            user.save(function (err1, r) {
+                if (err1) {
+                    // user model validation failed
+                    res.send(400);
+                } else {
+                    res.json({username: un});
+                }
+            });
+        }
+        else {
+            // failed authentication, reject
+            res.send(401); // UnAuth
         }
     });
+
 };
 
 

@@ -18,7 +18,6 @@
  */
 'use strict';
 
-var User = require('svmp-user-model');
 
 
 module.exports = function (grunt) {
@@ -41,12 +40,14 @@ module.exports = function (grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
 
-    grunt.registerTask('create-service-token', 'Make Token', function () {
+    // Run like: > grunt create-server-token:dave
+    grunt.registerTask('create-service-token', 'Make Token', function (username) {
         var
             config = require('./config/config-local'),
             jwt = require('jsonwebtoken');
 
-        var token = jwt.sign({expires: '', role: 'admin'}, config.settings.jwtSecret);
+        console.log("Create token for: ", username);
+        var token = jwt.sign({username: username, expires: '', role: 'admin'}, config.settings.jwtSecret);
         console.log(token);
     });
 

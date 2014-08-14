@@ -64,6 +64,61 @@ describe("Services", function () {
                 }).end(done);
         });
 
+        it('should add a user', function(done) {
+            app.post('/services/user')
+                .set('svmp-authtoken',admin_token)
+                .send({user: {username: 'carl', password: 'carl12345678', email: 'carl@here.com', device_type: 'abc'}})
+                .expect(function(res) {
+                    app.get('/services/users')
+                        .set('svmp-authtoken',admin_token)
+                        .expect(function(res) {
+                            assert.strictEqual(res.statusCode,200);
+                            assert.ok(res.body.users);
+                            assert.strictEqual(res.body.users.length,3);
+                        });
+                }).end(done);
+
+        });
+
+        it('should fail to add a user when missing fields', function(done) {
+            app.post('/services/user')
+                .set('svmp-authtoken',admin_token)
+                .send({user: {username: 'carl', password: 'carl12345678',device_type: 'abc'}})
+                .expect(400,done);
+
+        });
+
+        it('should delete a User', function(done){
+            app.delete('/services/user/bob')
+                .set('svmp-authtoken',admin_token)
+                .expect(function(res) {
+                    assert.equal(res.statusCode, 200);
+                    app.get('/services/users')
+                        .set('svmp-authtoken',admin_token)
+                        .expect(function(res) {
+                            assert.strictEqual(res.statusCode,200);
+                            assert.ok(res.body.users);
+                            assert.strictEqual(res.body.users.length,1);
+                        });
+                }).end(done);
+
+        });
+
+        it('should update a User', function(done){
+            app.put('/services/user/bob')
+                .set('svmp-authtoken',admin_token)
+                .send({update: {email: 'bob1@there.com'}})
+                .expect(function(res) {
+                    assert.equal(res.statusCode, 200);
+                    app.get('/services/user/bob')
+                        .set('svmp-authtoken',admin_token)
+                        .expect(function(res) {
+                            assert.strictEqual(res.statusCode,200);
+                            assert.strictEqual(res.body.user.email,'bob1@there.com');
+                        });
+                }).end(done);
+
+        });
     });
 
 

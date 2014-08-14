@@ -113,13 +113,57 @@ List of users
 
 POST `/services/user`
 
+**Request**
+
+```javascript
+ {user: {
+    username: '',
+    password: '',
+    email: '',
+    devices_type: ''
+   }
+ }
+```
+
+**Response**
+
+*200* on success
+
+*400* missing required fields
+
+*500* Error creating the User
+
+
 ##### Delete User
 
-DELETE `/services/user`
+DELETE `/services/user/:username`
+
+where `:username` is the actual user's name
+
+**Response**
+
+*200* on success
+
+*400* missing username
+
+*404* User not found
+
 
 ##### Update User
 
-PUT `/services/user`
+PUT `/services/user/:username`
+
+where `:username` is the actual user's name
+
+**Request**
+
+```javascript
+ { 
+   username: 'username of person to update'
+   // Fields to update
+   update: {'email': 'new@here.com'}
+ }
+```
 
 ##### Find User
 
@@ -139,22 +183,16 @@ where `:username` is the actual user's name
 
 *400* Bad Request (maybe missing username)
 
-##### Update User
 
 #### Cloud
 ##### Setup VM
 
 Setup a VM for user. Usually done during login
 
-POST `/services/cloud/setupVm`
+GET `/services/cloud/setupVm/:username`
 
-**Request**
+where `:username` is the actual user's name
 
-```javascript
-  {
-    username: 'username'
-  }
-```
 
 **Response**
 
@@ -194,7 +232,7 @@ POST `/services/cloud/startVM`
 
 POST `/services/cloud/assignVm`
 
-##### List Images
+##### List Images and Flavors
 
 GET `/services/cloud/images`
 

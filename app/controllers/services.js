@@ -20,34 +20,109 @@
 'use strict';
 
 var
-    svmp = require('../../lib/svmp');
+    svmp = require('../../lib/svmp'),
+    filtered_fields = '_id username email password_change_needed approved device_type volume_id vm_ip vm_ip_id vm_id roles';
 
-exports.setUpVm = function(req,res) {
+exports.setUpVm = function (req, res) {
+    var un = req.params.username;
 
+    if(un) {
+        svmp.cloud.setUpUser({username: un}).then(function (userObj) {
+            userObj.vm_port = svmp.config.get('settings:vm_port');
+            res.json(200,useObj);
+        }, function (err) {
+            res.send(500);
+            svmp.logger.error("setup.onLogin, " + err);
+        }).done();
+    }
 };
 
 
-exports.listUsers = function(req,res) {
-    svmp.users.listUsers(function(errCode,users) {
-        if(errCode) {
-            res.json(errCode,{msg: "Encountered an error listing users"});
-        } else {
-            res.json(200,{users: users});
-        }
-    })
-};
-
-exports.getUser = function(req,res) {
-    var username = req.params.username;
-    if(username) {
-        svmp.users.getUserWithFilteredData(username,function(err,user){
-            if(err) {
-                res.json(500,{msg: 'Error finding User'});
+exports.listUsers = function (req, res) {
+    svmp.User.find({})
+        .select(filtered_fields)
+        .exec(function (err, users) {
+            if (users) {
+                res.json(200, {users: users});
             } else {
-                res.json(200,{user: user});
+                callback(500); // Server Error
+            }
+        });
+};
+
+// GET /services/user/:username
+exports.getUser = function (req, res) {
+    var username = req.params.username;
+    if (username) {
+        svmp.User.findOne({username: username}, filtered_fields,
+            function (err, user) {
+                if (err) {
+                    res.json(404, {msg: 'Error finding User'});
+                } else {
+                    res.json(200, {user: user});
+                }
+            });
+    } else {
+        res.json(400, {msg: 'Bad request'});
+    }
+};
+
+// POST /services/user
+exports.addUser = function (req, res) {
+    var user = req.body.user;
+    if (user && user.username && user.password && user.email && user.device_type) {
+        new svmp.User({
+            username: user.username,
+            password: user.password,
+            email: user.email,
+            password_change_needed: true,
+            device_type: user.device_type,
+            volume_id: ''
+        }).save(function (err) {
+                if (err) {
+                    res.json(500, {msg: "Error adding user"});
+                } else {
+                    res.send(200);
+                }
+            });
+    } else {
+        res.json(400, {msg: 'Missing required fields'});
+    }
+};
+
+// DELETE /services/user/:username
+exports.deleteUser = function (req, res) {
+    var username = req.params.username;
+    if (username) {
+        svmp.User.findOne({username: username}, function (err, user) {
+            if (err) {
+                res.json(404, {msg: "User not found"});
+            } else {
+                user.remove();
+                res.send(200);
             }
         });
     } else {
-        res.json(400,{msg: 'Bad request'});
+        res.json(400, {msg: 'Missing required fields'});
     }
+};
+
+exports.updateUser = function (req, res) {
+    var username = req.params.username;
+    var updates = req.body.update;
+
+    if (username && updates) {
+        svmp.User.update({username: username}, updates, function (err, numberAffected, raw) {
+            if (err) {
+                res.json(404, {msg: "User not found"});
+            } else {
+                if (numberAffected === 1) {
+                    res.send(200);
+                }
+            }
+        });
+    } else {
+        res.json(400, {msg: 'Missing required fields'});
+    }
+
 };
