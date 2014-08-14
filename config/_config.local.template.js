@@ -24,6 +24,12 @@ module.exports = {
         // default = 21600 [6 hours]
         max_session_length: 21600,
 
+        // Validity time of session tokens in seconds.
+        // Allows client to reconnect a disconnected session by providing
+        // the token instead of doing a full re-authentication.
+        // default = 300 [5 minutes]
+        session_token_ttl: 300,
+
         // Enable SSL
         // default = false
         tls_proxy: false,
@@ -118,30 +124,28 @@ module.exports = {
     },
     // Video Information sent from Proxy to Client
     webrtc: {
-        "ice": {
-            // Enter one or more servers to use for ICE NAT traversal
-            "iceServers": [
-                // Ex1: Unauthenticated STUN server
-                {
-                    "url": "stun:<stun server ip>:3478"
-                },
-                // Ex2: Password protected STUN server
-                {
-                    "url": "stun:<stun server ip>:3478",
-                    "password": "stun-credential"
-                },
-                // Ex3: TURN relay server (username & password required)
-                {
-                    "url": "turn:<turn server ip>:3478",
-                    "username": "turn-user",
-                    "password": "turn-password"
-                }
-            ]
-        },
+        // Enter one or more servers to use for ICE NAT traversal
+        "iceServers": [
+            // Ex1: Unauthenticated STUN server
+            {
+                "url": "stun:<stun server ip>:3478"
+            },
+            // Ex2: Password protected STUN server
+            {
+                "url": "stun:<stun server ip>:3478",
+                "password": "stun-credential"
+            },
+            // Ex3: TURN relay server (username & password required)
+            {
+                "url": "turn:<turn server ip>:3478",
+                "username": "turn-user",
+                "password": "turn-password"
+            }
+        ],
         // WebRTC constraints and paramenters that are sent to the peers.
         // Don't change unless you know what you're doing.
-        video: { audio: true, video: { mandatory: {}, optional: []}},
-        pc: {optional: [
+        "videoConstraints": { audio: true, video: { mandatory: {}, optional: []}},
+        "pcConstraints": {optional: [
             {DtlsSrtpKeyAgreement: true}
         ]}
     }

@@ -50,7 +50,11 @@ exports.login = function(req,res) {
 
             // Response object
             var responseObj = {
-                authtoken: token,
+                sessionInfo: {
+                    token: token,
+                    maxLength: max_session,
+                    gracePeriod: svmp.config.get('settings:session_token_ttl')
+                },
                 server: {
                     host: "svmp-server.example.com",
                     port: 8002
@@ -73,7 +77,7 @@ exports.login = function(req,res) {
 exports.changeUserPassword = function(req,res) {
     var un = req.user.username; // Get username from token (done in Express)
 
-    var oldPassword = req.body.old_password;
+    var oldPassword = req.body.password;
     var newPassword = req.body.new_password;
 
     svmp.User.findOne({username: un}, function (err, user) {
