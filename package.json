@@ -14,6 +14,7 @@
         "express": "~4.2.0",
         "body-parser": "~1.0.0",
         "jsonwebtoken": "~0.4.1",
+        "pkgcloud": "git+https://github.com/SVMP/pkgcloud.git#0.9.4-svmp",
         "mongoose": "~3.8.8",
         "grunt-cli": "~0.1.13",
         "winston": "~0.7.3",
