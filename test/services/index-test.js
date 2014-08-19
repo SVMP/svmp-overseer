@@ -121,5 +121,12 @@ describe("Services", function () {
         });
     });
 
+    /*describe("Sessions CRUD", function(){
+        it('should fail to add a user when missing fields', function(done) {
+
+        });
+
+    });*/
+
 
 });
