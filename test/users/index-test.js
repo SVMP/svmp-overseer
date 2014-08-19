@@ -85,7 +85,7 @@ describe("Client Users", function () {
             app.post('/api/user/changePasswd')
                 .set('svmp-authtoken', user_token)
                 .send({
-                    old_password: 'dave11111111',
+                    password: 'dave11111111',
                     new_password: 'dave33333333'
                 })
                 .expect(function (res) {

@@ -48,6 +48,11 @@ module.exports = function (app) {
     app.route('/services/user')
         .post(services.addUser);
 
+    /** Sessions **/
+
+
+
+
     /** Cloud **/
     app.route('/services/cloud/setupVm/:username')
         .get(services.setUpVm);
