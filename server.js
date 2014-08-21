@@ -24,10 +24,14 @@ var
     express = require('express'),
     bodyParser = require('body-parser'),
     auth = require('./lib/authentication'),
+    vmManager = require('./lib/cloud/vm-manager'),
     app = express();
 
 // Bootup SVMP object
 svmp.init();
+
+// Run an interval to terminate expired VMs (those that have been idle for too long)
+vmManager.startExpirationInterval();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());

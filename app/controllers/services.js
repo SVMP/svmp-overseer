@@ -41,7 +41,7 @@ exports.setUpVm = function (req, res) {
             res.json(200, obj);
         }).catch(function (err) {
             res.send(500);
-            svmp.logger.error("setup.onLogin failed:", err);
+            svmp.logger.error("setup.onLogin failed:", err.message);
         }).done();
     }
 };

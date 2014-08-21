@@ -31,6 +31,16 @@ module.exports = {
         // default = 300 [5 minutes]
         session_token_ttl: 300,
 
+        // Maximum life span of an idle VM (in seconds) before it is expired and gets destroyed.
+        // This is used after a session is disconnected.
+        // default = 3600 [1 hour]
+        vm_idle_ttl: 3600,
+
+        // Interval (in seconds) of time to check for expired VMs.
+        // This is used after a session is disconnected.
+        // default = 300 [5 minutes]
+        vm_check_interval: 300,
+
         // Enable SSL
         // default = false
         tls_proxy: false,

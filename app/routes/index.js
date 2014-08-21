@@ -23,7 +23,7 @@ module.exports = function (app) {
 
     var users = require('../controllers/users'),
         services = require('../controllers/services'),
-        sessions = require('../controllers/sessions');
+        vmSessions = require('../controllers/vm-sessions');
 
 
     /******  User Clients ******/
@@ -50,22 +50,11 @@ module.exports = function (app) {
     app.route('/services/user')
         .post(services.addUser);
 
-    /** Sessions **/
-    app.route('/services/session/create')
-        .post(sessions.createSession);
-
-    app.route('/services/session/remove')
-        .delete(sessions.clearSessions);
-
-    app.route('/services/session/:username')
-        .delete(sessions.clearSessionsForUser);
-
-    app.route('/services/session/expired/:sid')
-        .get(sessions.getExpired);
-
-    app.route('/services/session/expired_vm_session')
-        .get(sessions.getExpiredVmSessions);
-
+    /** VM Sessions **/
+    app.route('/services/vm-session')
+        .post(vmSessions.createSession)
+        .put(vmSessions.updateSession);
+        // no need to read or delete from proxy
 
     /** Cloud **/
     app.route('/services/cloud/setupVm/:username')
