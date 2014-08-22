@@ -1,6 +1,6 @@
 {
-    "name": "svmp-rest-api",
-    "description": "Secure Virtual Mobile Platform REST api",
+    "name": "svmp-overseer",
+    "description": "Secure Virtual Mobile Platform central controller, login, and API server",
     "author": "Dave Bryson",
     "version": "0.0.1",
     "license": "Apache-2.0",
