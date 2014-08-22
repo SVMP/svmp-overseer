@@ -21,15 +21,9 @@ module.exports = {
         vm_port: 8001,
 
         // Maximum length of a client session (in seconds) before it is
-        // forcibly disconnected.
+        // forcibly disconnected. A client can reconnect with a token any time in this period.
         // default = 21600 [6 hours]
         max_session_length: 21600,
-
-        // Validity time of session tokens in seconds.
-        // Allows client to reconnect a disconnected session by providing
-        // the token instead of doing a full re-authentication.
-        // default = 300 [5 minutes]
-        session_token_ttl: 300,
 
         // Maximum life span of an idle VM (in seconds) before it is expired and gets destroyed.
         // This is used after a session is disconnected.
@@ -61,6 +55,12 @@ module.exports = {
         // TLS CA Cert to validate user certs against
         // only used if use_tls_user_auth == true
         tls_ca_cert: 'out/ca_cert.pem',
+
+        // Address of the proxy that we tell the client to connect to
+        proxy_host: 'svmp-server.example.com',
+
+        // Port of the proxy
+        proxy_port: 8002,
 
         // Use PAM authentication
         // default = false

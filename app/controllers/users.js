@@ -44,32 +44,7 @@ exports.login = function(req,res) {
         if(errCode) {
             res.json(errCode,{msg: 'Error authenticating'});
         } else {
-
-            // Setup token
-            var max_session = svmp.config.get('settings:max_session_length');
-
-            // Additional JWT content
-            result.exp = toDate(max_session).seconds.fromNow;
-            result.iss = svmp.config.get('settings:rest_server_url');
-            result.jti = util.format('%s-%s',result.username,uuid.v4());
-
-            var token = auth.makeToken(result);
-
-            // Response object
-            var responseObj = {
-                sessionInfo: {
-                    token: token,
-                    maxLength: max_session,
-                    gracePeriod: svmp.config.get('settings:session_token_ttl')
-                },
-                server: {
-                    host: "svmp-server.example.com",
-                    port: 8002
-                },
-                webrtc: svmp.config.get("webrtc")
-            };
-
-            res.json(200,responseObj);
+            sendToken(res, result);
         }
     });
 };
@@ -77,15 +52,13 @@ exports.login = function(req,res) {
 
 /**
  * Change current User password
- * You'll never get here without a valid JWT token in the header
  * @param req
  * @param res
  */
 exports.changeUserPassword = function(req,res) {
-    var un = req.user.username; // Get username from token (done in Express)
-
+    var un = req.body.username;
     var oldPassword = req.body.password;
-    var newPassword = req.body.new_password;
+    var newPassword = req.body.newPassword;
 
     svmp.User.findOne({username: un}, function (err, user) {
         if (err) {
@@ -101,7 +74,7 @@ exports.changeUserPassword = function(req,res) {
                     // user model validation failed
                     res.send(400);
                 } else {
-                    res.json({username: un});
+                    sendToken(res, {'user': user});
                 }
             });
         }
@@ -113,4 +86,42 @@ exports.changeUserPassword = function(req,res) {
 
 };
 
+// private function
+function sendToken(res, result) {
+    // Setup token
+    // result either contains an existing token, or a user object
 
+    var max_session;
+    var token = result.token;
+    if (token) {
+        // the client used a JWT to log in; instruct them to reuse it
+        // we tell the client the number of seconds the token is valid; this has decreased
+        max_session = (new Date(result.exp).getTime() - new Date().getTime()) / 1000;
+    } else {
+        // the client authenticated some other way; make a new token
+        max_session = svmp.config.get('settings:max_session_length');
+        var args = {
+            'sub': result.user.username,
+            'role': result.user.roles[0],
+            'exp': toDate(max_session).seconds.fromNow,
+            'iss': svmp.config.get('settings:rest_server_url'),
+            'jti': uuid.v4()
+        };
+        token = auth.makeToken(args);
+    }
+
+    // Response object
+    var responseObj = {
+        sessionInfo: {
+            token: token,
+            maxLength: max_session
+        },
+        server: {
+            host: svmp.config.get('settings:proxy_host'),
+            port: svmp.config.get('settings:proxy_port')
+        },
+        webrtc: svmp.config.get("webrtc")
+    };
+
+    res.json(200,responseObj);
+}

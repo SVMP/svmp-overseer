@@ -30,34 +30,32 @@ var
 // 400 missing parameter(s)
 // 500 other errors
 exports.createSession  = function(req,res){
-    if (!req.body.sid || !req.body.username || !req.body.expireAt) {
+    if (!req.body.username || !req.body.expireAt) {
         res.json(400, {msg: 'Missing parameter(s)'});
         return;
     }
 
-    var args = {
-        'sid': req.body.sid,
+    var conditions = {
+        'username': req.body.username
+    };
+    var update = {
         'username': req.body.username,
-        'expireAt': req.body.exp,
+        'expireAt': req.body.expireAt,
         'lastAction': new Date(0) // This sets to 1969
+    };
+    var options = {
+        'upsert': true
     };
 
     try {
-        new svmp.VMSession(args).save(function (err, sess) {
-                if (err) {
-                    res.json(500, {msg:'Error creating the session' });
-                } else {
-                    var query = {'username': sess.username, 'sid': {'$ne': sess.sid}};
-                    // before we return the result, remove any orphaned sessions that may exist that are tied to this username
-                    svmp.VMSession.remove(query, function (err, result) {
-                        if (err) {
-                            res.json(500, {msg:'Could not remove orphaned sessions: ' + err});
-                        } else {
-                            res.json(200, {msg:'Created session successfully'});
-                        }
-                    });
-                }
-            });
+        // if a VM session already exists for this user, overwrite it
+        svmp.VMSession.findOneAndUpdate(conditions, update, options, function (err, sess) {
+            if (err) {
+                res.json(500, {msg:'Error creating the session' });
+            } else {
+                res.json(200, {msg:'Created session successfully'});
+            }
+        });
 
     } catch (err) {
         res.json(500, {msg:'Error creating the session' });
@@ -71,12 +69,12 @@ exports.createSession  = function(req,res){
 // 400 missing parameter(s)
 // 500 other errors
 exports.updateSession = function (req, res) {
-    if (!req.body.sid || !req.body.lastAction) {
+    if (!req.body.username || !req.body.lastAction) {
         res.json(400, {msg: 'Missing parameter(s)'});
         return;
     }
 
-    var query = {'sid': req.body.sid};
+    var query = {'username': req.body.username};
     var update = {'lastAction': req.body.lastAction};
 
     try {

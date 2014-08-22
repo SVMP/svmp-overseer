@@ -32,7 +32,7 @@ module.exports = function (app) {
         .post(users.login);
 
     // auth token required in header for access
-    app.route('/api/user/changePasswd')
+    app.route('/changePassword')
         .post(users.changeUserPassword);
 
 
