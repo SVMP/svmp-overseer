@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * author Dave Bryson
+ * author Dave Bryson, Joe Portner
  *
  */
 
@@ -31,9 +31,19 @@ describe("Client Users", function () {
      * Test login
      */
     describe("Authentication/Login", function () {
-        it('should login user and return token in body', function (done) {
+        it('should login user with password and return token in body', function (done) {
             app.post('/login')
                 .send({username: 'dave', password: 'dave12345678'})
+                .expect(function (res) {
+                    assert.ok(res.body.sessionInfo.token);
+                    assert.ok(res.body.webrtc);
+                })
+                .expect(200, done);
+        });
+
+        it('should login user with token and return token in body', function (done) {
+            app.post('/login')
+                .send({username: 'dave', sessionToken: user_token})
                 .expect(function (res) {
                     assert.ok(res.body.sessionInfo.token);
                     assert.ok(res.body.webrtc);
@@ -47,9 +57,15 @@ describe("Client Users", function () {
                 .expect(400, done)
         });
 
-        it('should fail on bad username or password (401)', function (done) {
+        it('should fail on bad username/password combination (401)', function (done) {
             app.post('/login')
                 .send({username: 'bob', password: 'bad'})
+                .expect(401, done);
+        });
+
+        it('should fail on unknown username (401)', function (done) {
+            app.post('/login')
+                .send({username: 'joe', password: 'joe'})
                 .expect(401, done);
         });
 
@@ -62,37 +78,41 @@ describe("Client Users", function () {
 
     /**
      * Test changing password
-     * Uses token for authenticating
      */
     describe("Password change", function () {
-        it('should change users password', function (done) {
-
-            app.post('/api/user/changePasswd')
-                .set('svmp-authtoken', user_token)
+        it('should change users password, then login with new password', function (done) {
+            app.post('/changePassword')
                 .send({
+                    username: 'dave',
                     password: 'dave12345678',
-                    new_password: 'dave22222222'
+                    newPassword: 'dave22222222'
                 })
-                .expect(function (res) {
-                    assert.equal(res.statusCode, 200);
-                })
-                .end(done);
+                .expect(200, function() {
+                    // at this point, we have changed the password; see if we can log in now
+                    app.post('/login')
+                        .send({username: 'dave', password: 'dave22222222'})
+                        .expect(200, done);
+                });
         });
 
-        it('should fail on password change with bad old_password', function (done) {
-
-            // Now check they can access stuff with token
-            app.post('/api/user/changePasswd')
-                .set('svmp-authtoken', user_token)
+        it('should fail on password change with bad current password', function (done) {
+            app.post('/changePassword')
                 .send({
+                    username: 'dave',
                     password: 'dave11111111',
-                    new_password: 'dave33333333'
+                    newPassword: 'dave33333333'
                 })
-                .expect(function (res) {
-                    assert.equal(res.statusCode, 401);
-                })
-                .end(done);
+                .expect(401, done);
+        });
 
+        it('should fail on password change with invalid new password', function (done) {
+            app.post('/changePassword')
+                .send({
+                    username: 'dave',
+                    password: 'dave12345678',
+                    newPassword: '2short'
+                })
+                .expect(400, done);
         });
 
     });

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * author Dave Bryson
+ * author Dave Bryson, Joe Portner
  *
  */
 
@@ -121,12 +121,35 @@ describe("Services", function () {
         });
     });
 
-    /*describe("Sessions CRUD", function(){
-        it('should fail to add a user when missing fields', function(done) {
-
+    describe("VM Session Management", function(){
+        it('should fail to add a new VM session when missing fields', function(done) {
+            app.post('/services/vm-session')
+                .set('svmp-authtoken',admin_token)
+                .send({username: 'dave'})
+                .expect(400, done);
         });
 
-    });*/
+        it('should add a new VM session with correct fields', function(done) {
+            app.post('/services/vm-session')
+                .set('svmp-authtoken',admin_token)
+                .send({username: 'dave', expireAt: require('to-date')(6).hours.fromNow})
+                .expect(200, done);
+        });
 
+        it('should fail to update a new VM session when missing fields', function(done) {
+            app.put('/services/vm-session')
+                .set('svmp-authtoken',admin_token)
+                .send({username: 'dave'})
+                .expect(400, done);
+        });
+
+        it('should update a new VM session with correct fields', function(done) {
+            app.put('/services/vm-session')
+                .set('svmp-authtoken',admin_token)
+                .send({username: 'dave', lastAction: new Date()})
+                .expect(200, done);
+        });
+
+    });
 
 });

@@ -79,6 +79,12 @@ beforeEach(function(done){
 
 });
 
+before(function (done) {
+    svmp.VMSession.remove({}, function (err) {
+        done();
+    });
+});
+
 after(function (done) {
     svmp.shutdown();
     done();

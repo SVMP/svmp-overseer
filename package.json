@@ -2,6 +2,10 @@
     "name": "svmp-overseer",
     "description": "Secure Virtual Mobile Platform central controller, login, and API server",
     "author": "Dave Bryson",
+    "contributors": [
+        "Dave Bryson",
+        "Joe Portner"
+    ],
     "version": "0.0.1",
     "license": "Apache-2.0",
     "engines": {
@@ -9,6 +13,9 @@
         "npm": "1.4.x"
     },
     "private": true,
+    "scripts": {
+        "test": "grunt"
+    },
     "dependencies": {
         "svmp-user-model": "git+https://github.com/SVMP/svmp-user-model.git",
         "express": "~4.2.0",
