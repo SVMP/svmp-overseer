@@ -19,7 +19,6 @@
 'use strict';
 
 
-
 module.exports = function (grunt) {
 
     // Project Configuration
@@ -43,11 +42,13 @@ module.exports = function (grunt) {
     // Run like: > grunt create-server-token:dave
     grunt.registerTask('create-service-token', 'Make Token', function (username) {
         var
+            fs = require('fs'),
             config = require('./config/config-local'),
             jwt = require('jsonwebtoken');
+        var privKey = fs.readFileSync(config.settings.tls_private_key);
 
         console.log("Create token for: ", username);
-        var token = jwt.sign({username: username, expires: '', role: 'admin'}, config.settings.jwtSecret);
+        var token = jwt.sign({username: username, expires: '', role: 'admin'}, privKey);
         console.log(token);
     });
 

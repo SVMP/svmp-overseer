@@ -14,8 +14,9 @@
     },
     "private": true,
     "scripts": {
-        "test": "npm run test-config && grunt",
-        "test-config": "cp ./config/_config.local.template.js ./config/config-local.js"
+        "test": "npm run test-config && npm run test-certs && grunt",
+        "test-config": "cp ./config/_config.local.template.js ./config/config-local.js",
+        "test-certs": "make -C tls/"
     },
     "bin": {
         "svmp-overseer": "./server.js"

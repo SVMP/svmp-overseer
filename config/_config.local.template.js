@@ -2,7 +2,10 @@
 module.exports = {
     settings: {
 
-        jwtSecret: 'make this a long secret code',
+        // Signing algorithm for login tokens.
+        // Must be one of the RSA or ECDSA options listed here:
+        // https://github.com/auth0/node-jsonwebtoken#algorithms-supported
+        jwt_signing_alg: "RS512",
         rest_server_url: 'http://localhost:3000',
 
 
@@ -36,13 +39,13 @@ module.exports = {
         vm_check_interval: 300,
 
         // Enable SSL
-        // default = false
-        use_tls: false,
+        // default = true
+        use_tls: true,
 
         // SSL certificate and private key paths
         // (required if use_tls == true)
-        tls_certificate: 'out/server_cert.pem',
-        tls_private_key: 'out/server_pkey.pem',
+        tls_certificate: 'tls/server-cert.pem',
+        tls_private_key: 'tls/server-key.pem',
 
         // SSL private key password
         // (if the server private key file is password protected)
@@ -54,7 +57,7 @@ module.exports = {
 
         // TLS CA Cert to validate user certs against
         // only used if use_tls_user_auth == true
-        tls_ca_cert: 'out/ca_cert.pem',
+        tls_ca_cert: 'tls/ca-cert.pem',
 
         // Address of the proxy that we tell the client to connect to
         proxy_host: 'svmp-server.example.com',
