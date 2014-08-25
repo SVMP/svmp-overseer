@@ -24,22 +24,81 @@ var
     Q = require('q');
 
 
-exports.listDevices = function(req,res) {
 
+// GET /services/cloud/devices
+exports.listDevices = function (req, res) {
+    var images = svmp.config.get('settings:new_vm_defaults:images');
+    res.json(200, {devices: images});
 };
 
-exports.listImages = function(req,res) {
+// GET /services/cloud/images
+exports.listImages = function (req, res) {
+    var result = {flavors: [], images: []};
 
+    svmp.cloud.getFlavors(function (err, allflavors) {
+
+        if (err) {
+            res.json(500, {msg: "Error listing Cloud Flavors"});
+        } else {
+            for (i = 0; i < allflavors.length; i++) {
+                var o = allflavors[i];
+                result.flavors.push([ o._id , o.name]);
+            }
+            svmp.cloud.getImages(function (err, r) {
+
+                if (err) {
+                    res.json(500, {msg: "Error listing Cloud Images"});
+                } else {
+                    for (i = 0; i < r.length; i++) {
+                        var o = r[i];
+                        result.images.push([o._id, o.name]);
+                    }
+
+                    res.json(200, result);
+                }
+            });
+        }
+    });
 };
 
-exports.listVolumes = function(req,res) {
-
+// GET /services/cloud/volumes
+exports.listVolumes = function (req, res) {
+    var results = [];
+    svmp.cloud.getVolumes(function (err, r) {
+        if (err) {
+            res.json(500, {msg: "Problem listing volumes"});
+        } else {
+            for (var i = 0; i < r.length; i++) {
+                var name = r[i].name || 'unk';
+                results.push([ name, r[i].status, r[i].id]);
+            }
+            res.json(200, {volumes: result});
+        }
+    });
 };
 
-exports.createVolume = function(req,res) {
-
+// POST /services/cloud/volume/create
+exports.createVolume = function (req, res) {
+    var un = req.body.
+    Q.ninvoke(svmp.User, 'findOne', {username: un})
+        .then(svmp.cloud.createVolumeForUser)
+        .then(function(userObj) {
+            var u = userObj.user;
+            svmp.User.update({username: u.username}, u, function (err, numberAffected, raw) {
+                if (err) {
+                    res.json(404, {msg: "User not found"});
+                } else {
+                    if (numberAffected === 1) {
+                        res.send(200);
+                    }
+                }
+            })
+        })
+        .catch(function (err){
+            res.json(404, {msg: "Problem creating Volume for user"});
+        }).done();
 };
 
-exports.assignVolume = function(req,res) {
+exports.assignVolume = function (req, res) {
 
 };
