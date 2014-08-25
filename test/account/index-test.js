@@ -42,14 +42,10 @@ describe("Client Account", function () {
                 .expect(200, done);
         });
 
-        it('should login user with token and return token in body', function (done) {
+        it('should fail if a token is presented instead of actual user credentials', function (done) {
             app.post('/login')
                 .send({username: 'dave', sessionToken: user_token})
-                .expect(function (res) {
-                    assert.ok(res.body.sessionInfo.token);
-                    assert.ok(res.body.webrtc);
-                })
-                .expect(200, done);
+                .expect(401, done);
         });
 
         it('should fail if missing a required field (400)', function (done) {
