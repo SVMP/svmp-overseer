@@ -21,7 +21,7 @@
 
 module.exports = function (app) {
 
-    var users = require('../controllers/users'),
+    var account = require('../controllers/account'),
         services = require('../controllers/services'),
         vmSessions = require('../controllers/vm-sessions');
 
@@ -29,11 +29,11 @@ module.exports = function (app) {
     /******  User Clients ******/
 
     app.route('/login')
-        .post(users.login);
+        .post(account.login);
 
     // auth token required in header for access
     app.route('/changePassword')
-        .post(users.changeUserPassword);
+        .post(account.changeUserPassword);
 
 
     /****** Services ******/
