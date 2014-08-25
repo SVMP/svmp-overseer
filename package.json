@@ -14,7 +14,11 @@
     },
     "private": true,
     "scripts": {
-        "test": "grunt"
+        "test": "npm run test-config && grunt",
+        "test-config": "cp ./config/_config.local.template.js ./config/config-local.js"
+    },
+    "bin": {
+        "svmp-overseer": "./server.js"
     },
     "dependencies": {
         "svmp-user-model": "git+https://github.com/SVMP/svmp-user-model.git",
