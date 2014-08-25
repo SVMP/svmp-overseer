@@ -26,7 +26,7 @@ module.exports = function (app) {
         vmSessions = require('../controllers/vm-sessions');
 
 
-    /******  User Clients ******/
+    /******  User Account ******/
 
     app.route('/login')
         .post(account.login);
@@ -36,9 +36,9 @@ module.exports = function (app) {
         .post(account.changeUserPassword);
 
 
-    /****** Services ******/
+    /****** Admin Services ******/
 
-    /** User **/
+    /** Users **/
     app.route('/services/users')
         .get(services.listUsers);
 
@@ -55,6 +55,7 @@ module.exports = function (app) {
         .post(vmSessions.createSession)
         .put(vmSessions.updateSession);
         // no need to read or delete from proxy
+
 
     /** Cloud **/
     app.route('/services/cloud/setupVm/:username')

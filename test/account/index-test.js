@@ -26,7 +26,7 @@ var
     tokenHelper = require('../../lib/authentication').makeToken,
     user_token = tokenHelper({username: 'dave', role: 'user'});
 
-describe("Client Users", function () {
+describe("Client Account", function () {
 
     /**
      * Test login
