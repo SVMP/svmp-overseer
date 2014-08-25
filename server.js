@@ -37,10 +37,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 // Check Token for requests to /api/*
-app.all('/api/*',auth.checkToken);
+app.all('/api/*', auth.checkToken);
 
 // Check Token for admin role to /services/*
-app.all('/services/*',auth.checkAdminToken);
+app.all('/services/*', auth.checkAdminToken);
 
 // Load routes
 require('./app/routes/index')(app);
@@ -65,9 +65,25 @@ app.use(function (req, res) {
 
 var port = svmp.config.get('settings:port');
 
-// TODO: Need to check for TLS here...
-app.listen(port);
+if (svmp.config.isEnabled('settings:use_tls')) {
+    var https = require('https');
+    var fs = require('fs');
 
-svmp.logger.info('SVMP REST API running on port %d',port);
+    var options = {
+        key: fs.readFileSync(svmp.config.get('settings:tls_private_key')),
+        cert: fs.readFileSync(svmp.config.get('settings:tls_certificate'))
+    };
+
+    var server = https.createServer(options, app);
+    server.listen(port);
+
+    svmp.logger.info('SVMP REST API running on port %d with SSL', port);
+
+} else {
+
+    app.listen(port);
+    svmp.logger.info('SVMP REST API running on port %d', port);
+}
+
 
 

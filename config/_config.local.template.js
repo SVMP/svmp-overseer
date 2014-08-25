@@ -37,10 +37,10 @@ module.exports = {
 
         // Enable SSL
         // default = false
-        tls_proxy: false,
+        use_tls: false,
 
         // SSL certificate and private key paths
-        // (required if tls_proxy == true)
+        // (required if use_tls == true)
         tls_certificate: 'out/server_cert.pem',
         tls_private_key: 'out/server_pkey.pem',
 

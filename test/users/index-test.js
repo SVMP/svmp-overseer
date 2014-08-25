@@ -20,8 +20,9 @@
 'use strict';
 
 var
+    svmp = require('../../lib/svmp'),
     assert = require('assert'),
-    app = require('supertest')('http://localhost:3000'),
+    app = require('supertest')(svmp.config.get('settings:use_tls') ? 'https://localhost:3000' : 'http://localhost:3000'),
     tokenHelper = require('../../lib/authentication').makeToken,
     user_token = tokenHelper({username: 'dave', role: 'user'});
 

@@ -29,24 +29,6 @@ beforeEach(function(done){
 
     svmp.User.remove({}, function (err) {
 
-        /*var goodUser = new svmp.User({
-            username: 'dave',
-            password: 'dave12345678',
-            email: 'dave@here.com',
-            password_change_needed: false,
-            device_type: 'a_device',
-            volume_id: ''
-        });
-
-        var passwordChangeNeededUser = new svmp.User({
-            username: 'bob',
-            password: 'bob12345678',
-            email: 'bob@here.com',
-            password_change_needed: true,
-            device_type: 'a_device',
-            volume_id: ''
-        });*/
-
         new svmp.User({
             username: 'dave',
             password: 'dave12345678',
@@ -81,6 +63,7 @@ beforeEach(function(done){
 
 before(function (done) {
     svmp.VMSession.remove({}, function (err) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         done();
     });
 });
