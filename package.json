@@ -4,6 +4,7 @@
     "author": "Dave Bryson",
     "contributors": [
         "Dave Bryson",
+        "David Keppler",
         "Joe Portner"
     ],
     "version": "0.0.1",
@@ -34,7 +35,8 @@
         "winston": "~0.7.3",
         "q": "~1.0.1",
         "to-date": "latest",
-        "node-uuid": "~1.4.1"
+        "node-uuid": "~1.4.1",
+        "shelljs": "^0.3.0"
     },
     "devDependencies": {
         "mocha": "latest",

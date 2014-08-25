@@ -5,11 +5,12 @@ all: server-cert.pem test-cert.pem
 ca-cert.pem: ca.cnf
 	openssl req -new -x509 -days 9999 -config ca.cnf -keyout ca-key.pem -out ca-cert.pem
 
+SERVER_PASSPHRASE := changeme_password
 # Create Proxy Server key
 server-key.pem:
-	openssl genrsa -out server-key.pem 1024
+	openssl genrsa -passout "pass:$(SERVER_PASSPHRASE)" -aes256 -out server-key.pem 1024
 server-csr.pem: server.cnf server-key.pem
-	openssl req -new -config server.cnf -key server-key.pem -out server-csr.pem
+	openssl req -new -config server.cnf -key server-key.pem -passin "pass:$(SERVER_PASSPHRASE)" -out server-csr.pem
 # Self-signed certificate using out SVMP CA
 server-cert.pem: server-csr.pem ca-cert.pem
 	openssl x509 -req \
@@ -42,7 +43,7 @@ test-cert.pem: test-csr.pem ca-cert.pem
 		-out test-cert.pem
 
 test-client-verify: test-cert.pem ca-cert.pem
-	openssl verify -CAfile ca-cert.pem test-cert.pem	
+	openssl verify -CAfile ca-cert.pem test-cert.pem
 
 
 clean:

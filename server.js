@@ -69,10 +69,8 @@ if (svmp.config.isEnabled('settings:use_tls')) {
     var https = require('https');
     var fs = require('fs');
 
-    var options = {
-        key: fs.readFileSync(svmp.config.get('settings:tls_private_key')),
-        cert: fs.readFileSync(svmp.config.get('settings:tls_certificate'))
-    };
+    //svmp.config.configTls();
+    var options = svmp.config.get('tls_options');
 
     var server = https.createServer(options, app);
     server.listen(port);
@@ -84,6 +82,3 @@ if (svmp.config.isEnabled('settings:use_tls')) {
     app.listen(port);
     svmp.logger.info('SVMP REST API running on port %d', port);
 }
-
-
-

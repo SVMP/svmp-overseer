@@ -49,7 +49,7 @@ module.exports = {
 
         // SSL private key password
         // (if the server private key file is password protected)
-        tls_private_key_pass: '',
+        tls_private_key_pass: 'changeme_password',
 
         // Use TLS client authentication
         // default = false
