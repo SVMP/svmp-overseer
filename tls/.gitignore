@@ -1,4 +1,5 @@
 
 .DS_Store
 *.pem
+*.p12
 *.srl

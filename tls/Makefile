@@ -1,5 +1,5 @@
 
-all: server-cert.pem test-cert.pem
+all: server-cert.pem test-key-and-cert.p12
 
 # Create CA cert
 ca-cert.pem: ca.cnf
@@ -41,10 +41,18 @@ test-cert.pem: test-csr.pem ca-cert.pem
 		-CAkey ca-key.pem \
 		-CAcreateserial \
 		-out test-cert.pem
+# Combined key/cert for use on client devices
+test-key-and-cert.p12: test-cert.pem
+	openssl pkcs12 -export \
+		-inkey test-key.pem \
+		-passin "pass:password" \
+		-in test-cert.pem \
+		-passout "pass:password" \
+		-out test-key-and-cert.p12
 
 test-client-verify: test-cert.pem ca-cert.pem
 	openssl verify -CAfile ca-cert.pem test-cert.pem
 
 
 clean:
-	rm -f *.pem *.srl
+	rm -f *.pem *.p12 *.srl

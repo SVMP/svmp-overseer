@@ -44,11 +44,18 @@ module.exports = function (grunt) {
         var
             fs = require('fs'),
             config = require('./config/config-local'),
+            shell = require('shelljs'),
             jwt = require('jsonwebtoken');
-        var privKey = fs.readFileSync(config.settings.tls_private_key);
+
+        var pass = config.settings.tls_private_key_pass;
+        var file = config.settings.tls_private_key;
+        process.env.passphrase = pass;
+        var command = 'openssl rsa -in ' + file + ' -passin env:passphrase';
+        var privKey = shell.exec(command, {silent: true}).output;
+        delete process.env.passphrase;
 
         console.log("Create token for: ", username);
-        var token = jwt.sign({username: username, expires: '', role: 'admin'}, privKey);
+        var token = jwt.sign({username: username, role: 'admin'}, privKey, {algorithm: config.settings.jwt_signing_alg});
         console.log(token);
     });
 
