@@ -43,10 +43,11 @@ module.exports = function (grunt) {
     grunt.registerTask('create-service-token', 'Make Token', function (username) {
         var
             fs = require('fs'),
-            config = require('./config/config-local'),
+            config = require('./lib/config'),
             shell = require('shelljs'),
             jwt = require('jsonwebtoken');
 
+        config.init();
         var pass = config.settings.tls_private_key_pass;
         var file = config.settings.tls_private_key;
         process.env.passphrase = pass;

@@ -27,7 +27,7 @@ var
 
 // GET /services/cloud/devices
 exports.listDevices = function (req, res) {
-    var images = svmp.config.get('settings:new_vm_defaults:images');
+    var images = svmp.config.get('new_vm_defaults:images');
     res.json(200, {devices: images});
 };
 

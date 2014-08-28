@@ -1,49 +1,50 @@
 {
-    "name": "svmp-overseer",
-    "description": "Secure Virtual Mobile Platform central controller, login, and API server",
-    "author": "Dave Bryson",
-    "contributors": [
-        "Dave Bryson",
-        "David Keppler",
-        "Joe Portner"
-    ],
-    "version": "0.0.1",
-    "license": "Apache-2.0",
-    "engines": {
-        "node": "0.10.x",
-        "npm": "1.4.x"
-    },
-    "private": true,
-    "scripts": {
-        "test": "npm run test-config && npm run test-certs && grunt",
-        "test-config": "cp ./config/_config.local.template.js ./config/config-local.js",
-        "test-certs": "make -C tls/"
-    },
-    "bin": {
-        "svmp-overseer": "./server.js"
-    },
-    "dependencies": {
-        "svmp-user-model": "git+https://github.com/SVMP/svmp-user-model.git",
-        "express": "~4.2.0",
-        "body-parser": "~1.0.0",
-        "jsonwebtoken": "~0.4.1",
-        "aws-sdk": "~2.0.8",
-        "pkgcloud": "git+https://github.com/SVMP/pkgcloud.git#0.9.4-svmp",
-        "mongoose": "~3.8.8",
-        "mongoose-q": "~0.0.10",
-        "grunt-cli": "~0.1.13",
-        "winston": "~0.7.3",
-        "q": "~1.0.1",
-        "to-date": "latest",
-        "node-uuid": "~1.4.1",
-        "shelljs": "^0.3.0"
-    },
-    "devDependencies": {
-        "mocha": "latest",
-        "supertest" : "latest",
-        "grunt": "~0.4.5",
-        "grunt-env": "~0.4.1",
-        "grunt-mocha-test": "~0.10.0",
-        "load-grunt-tasks": "~0.4.0"
-    }
+  "name": "svmp-overseer",
+  "description": "Secure Virtual Mobile Platform central controller, login, and API server",
+  "author": "Dave Bryson",
+  "contributors": [
+    "Dave Bryson",
+    "David Keppler",
+    "Joe Portner"
+  ],
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
+  },
+  "private": true,
+  "scripts": {
+    "test": "grunt --config test/config.yaml"
+  },
+  "bin": {
+    "svmp-overseer": "./server.js"
+  },
+  "dependencies": {
+    "aws-sdk": "~2.0.8",
+    "body-parser": "~1.0.0",
+    "express": "~4.2.0",
+    "grunt-cli": "~0.1.13",
+    "js-yaml": "^3.2.1",
+    "jsonwebtoken": "~0.4.1",
+    "mongoose": "~3.8.8",
+    "mongoose-q": "~0.0.10",
+    "nconf": "^0.6.9",
+    "node-uuid": "~1.4.1",
+    "pkgcloud": "git+https://github.com/SVMP/pkgcloud.git#0.9.4-svmp",
+    "q": "~1.0.1",
+    "revalidator": "^0.2.0",
+    "shelljs": "^0.3.0",
+    "svmp-user-model": "git+https://github.com/SVMP/svmp-user-model.git",
+    "to-date": "latest",
+    "winston": "~0.7.3"
+  },
+  "devDependencies": {
+    "mocha": "latest",
+    "supertest": "latest",
+    "grunt": "~0.4.5",
+    "grunt-env": "~0.4.1",
+    "grunt-mocha-test": "~0.10.0",
+    "load-grunt-tasks": "~0.4.0"
+  }
 }

@@ -63,9 +63,9 @@ app.use(function (req, res) {
     res.json(404, {msg: 'Not Found'});
 });
 
-var port = svmp.config.get('settings:port');
+var port = svmp.config.get('port');
 
-if (svmp.config.isEnabled('settings:use_tls')) {
+if (svmp.config.isEnabled('enable_ssl')) {
     var https = require('https');
     var fs = require('fs');
 

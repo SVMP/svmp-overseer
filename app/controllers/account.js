@@ -99,12 +99,12 @@ function sendToken(res, result) {
         max_session = (new Date(result.exp).getTime() - new Date().getTime()) / 1000;
     } else {
         // the client authenticated some other way; make a new token
-        max_session = svmp.config.get('settings:max_session_length');
+        max_session = svmp.config.get('max_session_length');
         var args = {
             'sub': result.user.username,
             'role': result.user.roles[0],
             'exp': toDate(max_session).seconds.fromNow,
-            'iss': svmp.config.get('settings:rest_server_url'),
+            'iss': svmp.config.get('rest_server_url'),
             'jti': uuid.v4()
         };
         token = auth.makeToken(args);
@@ -117,14 +117,11 @@ function sendToken(res, result) {
             maxLength: max_session
         },
         server: {
-            host: svmp.config.get('settings:proxy_host'),
-            port: svmp.config.get('settings:proxy_port')
+            host: svmp.config.get('proxy_host'),
+            port: svmp.config.get('proxy_port')
         },
         webrtc: svmp.config.get("webrtc")
     };
 
     res.json(200,responseObj);
 }
-
-
-

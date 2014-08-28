@@ -1,5 +1,5 @@
 
-all: server-cert.pem test-key-and-cert.p12
+all: overseer-cert.pem server-cert.pem test-key-and-cert.p12
 
 # Create CA cert
 ca-cert.pem: ca.cnf
@@ -25,6 +25,24 @@ server-verify: server-cert.pem ca-cert.pem
 	openssl verify -CAfile ca-cert.pem server-cert.pem
 
 
+OVERSEER_PASSPHRASE := changeme_password
+# Create Proxy Server key
+overseer-key.pem:
+	openssl genrsa -passout "pass:$(SERVER_PASSPHRASE)" -aes256 -out overseer-key.pem 1024
+overseer-csr.pem: server.cnf overseer-key.pem
+	openssl req -new -config server.cnf -key overseer-key.pem -passin "pass:$(SERVER_PASSPHRASE)" -out overseer-csr.pem
+# Self-signed certificate using out SVMP CA
+overseer-cert.pem: overseer-csr.pem ca-cert.pem
+	openssl x509 -req \
+		-days 9999 \
+		-passin "pass:password" \
+		-in overseer-csr.pem \
+		-CA ca-cert.pem \
+		-CAkey ca-key.pem \
+		-CAcreateserial \
+		-out overseer-cert.pem
+overseer-verify: overseer-cert.pem ca-cert.pem
+	openssl verify -CAfile ca-cert.pem server-cert.pem
 
 # Create a test client signed with CA
 test-key.pem:

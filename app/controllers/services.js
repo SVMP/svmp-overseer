@@ -32,11 +32,11 @@ exports.setUpVm = function (req, res) {
         Q.ninvoke(svmp.User, 'findOne', {username: un}, filtered_fields)
         .then(svmp.cloud.setUpUser)
         .then(function (userObj) {
-            //userObj.vm_port = svmp.config.get('settings:vm_port');
+            //userObj.vm_port = svmp.config.get('vm_port');
             // for some reason, setting a property on userObj doesn't stick - make a new object instead
             var obj = {
                 'vm_ip': userObj.vm_ip,
-                'vm_port': svmp.config.get('settings:vm_port')
+                'vm_port': svmp.config.get('vm_port')
             };
             res.json(200, obj);
         }).catch(function (err) {

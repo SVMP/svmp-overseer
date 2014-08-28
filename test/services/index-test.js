@@ -22,7 +22,7 @@
 var
     svmp = require('../../lib/svmp'),
     assert = require('assert'),
-    app = require('supertest')(svmp.config.get('settings:use_tls') ? 'https://localhost:3000' : 'http://localhost:3000'),
+    app = require('supertest')(svmp.config.get('enable_ssl') ? 'https://localhost:3000' : 'http://localhost:3000'),
     tokenHelper = require('../../lib/authentication').makeToken,
     user_token = tokenHelper({username: 'dave', role: 'user'}),
     admin_token = tokenHelper({username: 'bob', role: 'admin'});
