@@ -43,20 +43,20 @@ module.exports = function (grunt) {
     grunt.registerTask('create-service-token', 'Make Token', function (username) {
         var
             fs = require('fs'),
-            config = require('./lib/config'),
+            svmp = require('./lib/svmp'),
             shell = require('shelljs'),
             jwt = require('jsonwebtoken');
 
-        config.init();
-        var pass = config.settings.tls_private_key_pass;
-        var file = config.settings.tls_private_key;
+        svmp.init();
+        var pass = svmp.config.get('private_key_pass');
+        var file = svmp.config.get('private_key');
         process.env.passphrase = pass;
         var command = 'openssl rsa -in ' + file + ' -passin env:passphrase';
         var privKey = shell.exec(command, {silent: true}).output;
         delete process.env.passphrase;
 
         console.log("Create token for: ", username);
-        var token = jwt.sign({username: username, role: 'admin'}, privKey, {algorithm: config.settings.jwt_signing_alg});
+        var token = jwt.sign({username: username, role: 'admin'}, privKey, {algorithm: svmp.config.get('jwt_signing_alg')});
         console.log(token);
     });
 

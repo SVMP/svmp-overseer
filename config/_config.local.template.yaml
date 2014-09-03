@@ -24,8 +24,8 @@ enable_ssl: true
 
 # SSL certificate and private key paths
 # (required if tls_proxy == true)
-server_certificate: 'path/to/server-cert.pem'
-private_key: 'path/to/server-key.pem'
+server_certificate: 'path/to/overseer-cert.pem'
+private_key: 'path/to/overseer-key.pem'
 
 # SSL private key password
 # (if the server private key file is password protected)
@@ -90,7 +90,7 @@ vm_check_interval: 300
 proxy_host: 'svmp-server.example.com'
 
 # Port the svmp-server listens on
-proxy_port: 8002
+proxy_port: 8080
 
 ################################################################################
 # Logging options
