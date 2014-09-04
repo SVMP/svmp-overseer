@@ -133,7 +133,7 @@ describe("Services", function () {
         it('should add a new VM session with correct fields', function(done) {
             app.post('/services/vm-session')
                 .set('svmp-authtoken',admin_token)
-                .send({username: 'dave', expireAt: require('to-date')(6).hours.fromNow})
+                .send({username: 'dave', expireAt: require('to-date')(6).hours.fromNow, connectTime: Date.now()})
                 .expect(200, done);
         });
 
@@ -147,7 +147,7 @@ describe("Services", function () {
         it('should update a new VM session with correct fields', function(done) {
             app.put('/services/vm-session')
                 .set('svmp-authtoken',admin_token)
-                .send({username: 'dave', lastAction: new Date()})
+                .send({username: 'dave', lastAction: new Date(), connectTime: Date.now()})
                 .expect(200, done);
         });
 
