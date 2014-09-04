@@ -24,7 +24,6 @@ var
     Q = require('q');
 
 
-
 // GET /services/cloud/devices
 exports.listDevices = function (req, res) {
     var images = svmp.config.get('new_vm_defaults:images');
@@ -61,6 +60,17 @@ exports.listImages = function (req, res) {
     });
 };
 
+/**
+ * GET /services/cloud/devices
+ * Returns and object of the device types: {note2:"1234,....}
+ * @param req
+ * @param res
+ */
+exports.getDevices = function (req,res) {
+    var obj = svmp.config.get("new_vm_defaults:images");
+    res.json(200,obj);
+};
+
 // GET /services/cloud/volumes
 exports.listVolumes = function (req, res) {
     var results = [];
@@ -79,7 +89,7 @@ exports.listVolumes = function (req, res) {
 
 // POST /services/cloud/volume/create
 exports.createVolume = function (req, res) {
-    var un = req.body.
+    var un = req.body;
     Q.ninvoke(svmp.User, 'findOne', {username: un})
         .then(svmp.cloud.createVolumeForUser)
         .then(function(userObj) {
@@ -99,7 +109,29 @@ exports.createVolume = function (req, res) {
         }).done();
 };
 
+/**
+ * Assign a volume to a user.  Assumes the volume and user already exist
+ * POST /services/cloud/assignvolume
+ * Request: body: {username: 'some username', volid: 'volid' }
+ *
+ */
 exports.assignVolume = function (req, res) {
+    var requestObj = req.body;
+    if( requestObj.username && requestObj.volid) {
+        svmp.User.findUserWithPromise({username: requestObj.username})
+            .then(function (user) {
+                user.volume_id = requestObj.volid;
+                return svmp.User.updateUserWithPromise(user);
+            })
+            .then(function (u) {
+                res.send(200);
+            })
+            .catch(function (err) {
+                console.log("ERROR: ", err);
+                res.json(500,{msg: "Error assigning volume"});
+            });
 
-
+    } else {
+        res.json(400, {msg: 'Missing required fields'});
+    }
 };

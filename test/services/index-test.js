@@ -153,4 +153,30 @@ describe("Services", function () {
 
     });
 
+    describe("Cloud services", function(){
+        it("should list devices", function(done){
+            app.get('/services/cloud/devices')
+                .set('svmp-authtoken',admin_token)
+                .expect(function(res){
+                    assert.equal(res.statusCode, 200);
+                    assert(typeof res.body === "object");
+                }).end(done);
+        });
+
+        it("should assign a volume to a given user", function(done){
+            app.post('/services/cloud/assignvolume')
+                .set('svmp-authtoken',admin_token)
+                .send({username: 'dave', volid: '1234'})
+                .expect(function(res) {
+                    assert.equal(res.statusCode, 200);
+                    app.get('/services/user/dave')
+                        .set('svmp-authtoken',admin_token)
+                        .expect(function(res) {
+                            assert.strictEqual(res.statusCode,200);
+                            assert.strictEqual(res.body.user.volume_id,'1234');
+                        });
+                }).end(done);
+        });
+    })
+
 });

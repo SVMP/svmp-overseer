@@ -23,7 +23,8 @@ module.exports = function (app) {
 
     var account = require('../controllers/account'),
         services = require('../controllers/services'),
-        vmSessions = require('../controllers/vm-sessions');
+        vmSessions = require('../controllers/vm-sessions'),
+        cloud = require('../controllers/cloud');
 
 
     /******  User Account ******/
@@ -37,6 +38,8 @@ module.exports = function (app) {
 
 
     /****** Admin Services ******/
+   /** Any url prefixed with /services/* requires admin privs **/
+
 
     /** Users **/
     app.route('/services/users')
@@ -60,5 +63,11 @@ module.exports = function (app) {
     /** Cloud **/
     app.route('/services/cloud/setupVm/:username')
         .get(services.setUpVm);
+
+    app.route('/services/cloud/devices')
+        .get(cloud.getDevices);
+
+    app.route('/services/cloud/assignvolume')
+        .post(cloud.assignVolume);
 
 };

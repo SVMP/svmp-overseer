@@ -144,12 +144,12 @@ aws:
 # pollintervalforstartup: this is the interval in milliseconds the apis to check for a running VM
 
 new_vm_defaults:
-    "images":
+    images:
         # Mapping of cloud image ID to a friendly name. These are the names used by the
         # configuration tool's add-user command.
         # each device type should have its own name and image ID in key/value format, e.g.:
         # "device_type": "imageID",
-        example_type_1: "image id"
+        note2: "1234"
         example_type_2: "image id"
     vmflavor: "1"
     goldsnapshotId: ""

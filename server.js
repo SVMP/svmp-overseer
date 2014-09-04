@@ -36,8 +36,10 @@ vmManager.startExpirationInterval();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
+
+/** Commented out for now. Not used anymore? **/
 // Check Token for requests to /api/*
-app.all('/api/*', auth.checkToken);
+// app.all('/api/*', auth.checkToken);
 
 // Check Token for admin role to /services/*
 app.all('/services/*', auth.checkAdminToken);
