@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Copyright 2014 The MITRE Corporation, All Rights Reserved.
  *
