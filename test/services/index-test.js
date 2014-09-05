@@ -177,6 +177,26 @@ describe("Services", function () {
                         });
                 }).end(done);
         });
+
+        /*it('Should list volumes', function(done) {
+            app.get('/services/cloud/volumes')
+                .set('svmp-authtoken',admin_token)
+                .expect(function(res){
+                    assert.equal(res.statusCode, 200);
+                    console.log("LIST VOLS: ",res.body);
+                }).end(done);
+
+        });
+
+        it('Should list images', function(done) {
+            app.get('/services/cloud/images')
+                .set('svmp-authtoken',admin_token)
+                .expect(function(res){
+                    console.log("LIST images: ",res.body);
+                    assert.equal(res.statusCode, 200);
+s                }).end(done);
+
+        });*/
     })
 
 });

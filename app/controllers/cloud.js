@@ -66,7 +66,7 @@ exports.listImages = function (req, res) {
  * @param req
  * @param res
  */
-exports.getDevices = function (req,res) {
+exports.listDevices = function (req,res) {
     var obj = svmp.config.get("new_vm_defaults:images");
     res.json(200,obj);
 };
@@ -76,13 +76,15 @@ exports.listVolumes = function (req, res) {
     var results = [];
     svmp.cloud.getVolumes(function (err, r) {
         if (err) {
+            console.log("ERROR: ", err);
             res.json(500, {msg: "Problem listing volumes"});
         } else {
+            //console.log(r);
             for (var i = 0; i < r.length; i++) {
                 var name = r[i].name || 'unk';
                 results.push([ name, r[i].status, r[i].id]);
             }
-            res.json(200, {volumes: result});
+            res.json(200, {volumes: results});
         }
     });
 };

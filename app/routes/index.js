@@ -65,9 +65,18 @@ module.exports = function (app) {
         .get(services.setUpVm);
 
     app.route('/services/cloud/devices')
-        .get(cloud.getDevices);
+        .get(cloud.listDevices);
 
     app.route('/services/cloud/assignvolume')
         .post(cloud.assignVolume);
+
+    app.route('/services/cloud/volumes')
+        .get(cloud.listVolumes);
+
+    app.route('/services/cloud/volume/create')
+        .post(cloud.createVolume);
+
+    app.route('/services/cloud/images')
+        .get(cloud.listImages);
 
 };
