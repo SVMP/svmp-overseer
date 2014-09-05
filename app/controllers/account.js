@@ -102,9 +102,10 @@ function sendToken(res, result) {
         max_session = svmp.config.get('max_session_length');
         var args = {
             'sub': result.user.username,
+            'email': result.user.email,
             'role': result.user.roles[0],
             'exp': toDate(max_session).seconds.fromNow,
-            'iss': svmp.config.get('rest_server_url'),
+            'iss': svmp.config.get('overseer_url'),
             'jti': uuid.v4()
         };
         token = auth.makeToken(args);
