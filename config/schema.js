@@ -17,6 +17,8 @@
 // the "url" formatter in revalidator is broken so all those fields are just
 // plain strings until that gets fixed
 
+// and same goes for the 'host-name' formatter
+
 module.exports = {
     "required": true,
     "type": "object",
@@ -109,7 +111,7 @@ module.exports = {
         "proxy_host": {
             "required": true,
             "type": "string",
-            "format": "host-name"
+            //"format": "host-name"
         },
         "proxy_port": {
             "type": "number",
