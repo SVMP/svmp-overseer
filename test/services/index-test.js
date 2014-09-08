@@ -154,6 +154,7 @@ describe("Services", function () {
     });
 
     describe("Cloud services", function(){
+
         it("should list devices", function(done){
             app.get('/services/cloud/devices')
                 .set('svmp-authtoken',admin_token)
@@ -163,6 +164,8 @@ describe("Services", function () {
                 }).end(done);
         });
 
+        // UNCOMMENT THESE TEST IF YOU HAVE A CLOUD CONFIGURED
+        /*
         it("should assign a volume to a given user", function(done){
             app.post('/services/cloud/assignvolume')
                 .set('svmp-authtoken',admin_token)
@@ -178,7 +181,7 @@ describe("Services", function () {
                 }).end(done);
         });
 
-        /*it('Should list volumes', function(done) {
+        it('Should list volumes', function(done) {
             app.get('/services/cloud/volumes')
                 .set('svmp-authtoken',admin_token)
                 .expect(function(res){
@@ -192,9 +195,26 @@ describe("Services", function () {
             app.get('/services/cloud/images')
                 .set('svmp-authtoken',admin_token)
                 .expect(function(res){
-                    console.log("LIST images: ",res.body);
                     assert.equal(res.statusCode, 200);
-s                }).end(done);
+                    console.log("LIST IMAGES: ",res.body);
+                }).end(done);
+
+        });
+
+        it("Should create a Volume", function(done) {
+            app.post('/services/cloud/volume/create')
+                .set('svmp-authtoken',admin_token)
+                .send({username: 'dave'})
+                .expect(function(res) {
+                    assert.equal(res.statusCode, 200);
+                    app.get('/services/cloud/volumes')
+                        .set('svmp-authtoken',admin_token)
+                        .expect(function(res) {
+                            assert.strictEqual(res.statusCode,200);
+                            console.log("Vols: ", res.body);
+                        });
+                }).end(done);
+
 
         });*/
     })

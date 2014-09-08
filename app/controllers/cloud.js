@@ -24,13 +24,7 @@ var
     Q = require('q');
 
 
-// GET /services/cloud/devices
-exports.listDevices = function (req, res) {
-    var images = svmp.config.get('new_vm_defaults:images');
-    res.json(200, {devices: images});
-};
-
-// GET /services/cloud/images
+// GET /services/cloud/images (TESTED)
 exports.listImages = function (req, res) {
     var result = {flavors: [], images: []};
 
@@ -39,7 +33,7 @@ exports.listImages = function (req, res) {
         if (err) {
             res.json(500, {msg: "Error listing Cloud Flavors"});
         } else {
-            for (i = 0; i < allflavors.length; i++) {
+            for (var i = 0; i < allflavors.length; i++) {
                 var o = allflavors[i];
                 result.flavors.push([ o._id , o.name]);
             }
@@ -61,7 +55,7 @@ exports.listImages = function (req, res) {
 };
 
 /**
- * GET /services/cloud/devices
+ * GET /services/cloud/devices (TESTED)
  * Returns and object of the device types: {note2:"1234,....}
  * @param req
  * @param res
@@ -71,7 +65,7 @@ exports.listDevices = function (req,res) {
     res.json(200,obj);
 };
 
-// GET /services/cloud/volumes
+// GET /services/cloud/volumes   (TESTED)
 exports.listVolumes = function (req, res) {
     var results = [];
     svmp.cloud.getVolumes(function (err, r) {
@@ -89,14 +83,14 @@ exports.listVolumes = function (req, res) {
     });
 };
 
-// POST /services/cloud/volume/create
+// POST /services/cloud/volume/create (TESTED)
 exports.createVolume = function (req, res) {
     var un = req.body;
-    Q.ninvoke(svmp.User, 'findOne', {username: un})
+    svmp.User.findUserWithPromise(un)
         .then(svmp.cloud.createVolumeForUser)
         .then(function(userObj) {
             var u = userObj.user;
-            svmp.User.update({username: u.username}, u, function (err, numberAffected, raw) {
+            svmp.User.update({username: u.username}, {volume_id: u.volume_id}, function (err, numberAffected, raw) {
                 if (err) {
                     res.json(404, {msg: "User not found"});
                 } else {
@@ -113,7 +107,7 @@ exports.createVolume = function (req, res) {
 
 /**
  * Assign a volume to a user.  Assumes the volume and user already exist
- * POST /services/cloud/assignvolume
+ * POST /services/cloud/assignvolume (TESTED)
  * Request: body: {username: 'some username', volid: 'volid' }
  *
  */
