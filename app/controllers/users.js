@@ -24,8 +24,9 @@ var
     Q = require('q'),
     filtered_fields = '_id username email password_change_needed approved device_type volume_id vm_ip vm_ip_id vm_id roles';
 
-// GET /services/cloud/setupVm/:username
-exports.setUpVm = function (req, res) {
+
+// Moved to cloud
+/*exports.setUpVm = function (req, res) {
     var un = req.params.username;
 
     if(un) {
@@ -44,7 +45,7 @@ exports.setUpVm = function (req, res) {
             svmp.logger.error("setup.onLogin failed:", err.message);
         }).done();
     }
-};
+};*/
 
 
 exports.listUsers = function (req, res) {

@@ -22,7 +22,7 @@
 module.exports = function (app) {
 
     var account = require('../controllers/account'),
-        services = require('../controllers/services'),
+        users = require('../controllers/users'),
         vmSessions = require('../controllers/vm-sessions'),
         cloud = require('../controllers/cloud');
 
@@ -43,15 +43,15 @@ module.exports = function (app) {
 
     /** Users **/
     app.route('/services/users')
-        .get(services.listUsers);
+        .get(users.listUsers);
 
     app.route('/services/user/:username')
-        .get(services.getUser)
-        .delete(services.deleteUser)
-        .put(services.updateUser);
+        .get(users.getUser)
+        .delete(users.deleteUser)
+        .put(users.updateUser);
 
     app.route('/services/user')
-        .post(services.addUser);
+        .post(users.addUser);
 
     /** VM Sessions **/
     app.route('/services/vm-session')
@@ -62,7 +62,7 @@ module.exports = function (app) {
 
     /** Cloud **/
     app.route('/services/cloud/setupVm/:username')
-        .get(services.setUpVm);
+        .get(cloud.setUpVm);
 
     app.route('/services/cloud/devices')
         .get(cloud.listDevices);

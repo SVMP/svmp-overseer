@@ -21,7 +21,32 @@
 
 var
     svmp = require('../../lib/svmp'),
-    Q = require('q');
+    Q = require('q'),
+    filtered_fields = '_id username email password_change_needed approved device_type volume_id vm_ip vm_ip_id vm_id roles';
+
+
+// GET /services/cloud/setupVm/:username
+exports.setUpVm = function (req, res) {
+    var un = req.params.username;
+
+    if(un) {
+        //Q.ninvoke(svmp.User, 'findOne', {username: un}, filtered_fields)
+        svmp.User.findUserWithPromise(un)
+            .then(svmp.cloud.setUpUser)
+            .then(function (userObj) {
+                //userObj.vm_port = svmp.config.get('vm_port');
+                // for some reason, setting a property on userObj doesn't stick - make a new object instead
+                var obj = {
+                    'vm_ip': userObj.vm_ip,
+                    'vm_port': svmp.config.get('vm_port')
+                };
+                res.json(200, obj);
+            }).catch(function (err) {
+                res.send(500);
+                svmp.logger.error("setup.onLogin failed:", err.message);
+            }).done();
+    }
+};
 
 
 // GET /services/cloud/images (TESTED)
