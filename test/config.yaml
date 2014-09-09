@@ -4,8 +4,7 @@
 # default = 3000
 port: 3000
 
-# External address
-address: 'localhost'
+rest_server_url: 'https://localhost:3000'
 
 ################################################################################
 # Database settings

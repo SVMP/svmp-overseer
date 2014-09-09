@@ -28,9 +28,10 @@ module.exports = {
             "maximum": 65535,
             "type": "number"
         },
-        "address": {
+        "rest_server_url": {
             "required": true,
-            "type": "string"
+            "type": "string",
+//            "format": "url"
         },
 
         // database settings
