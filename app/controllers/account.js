@@ -104,7 +104,7 @@ function sendToken(res, result) {
             'sub': result.user.username,
             'role': result.user.roles[0],
             'exp': toDate(max_session).seconds.fromNow,
-            'iss': svmp.config.get('rest_server_url'),
+            //'iss': svmp.config.get('rest_server_url'),
             'jti': uuid.v4()
         };
         token = auth.makeToken(args);
