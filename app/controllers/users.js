@@ -55,7 +55,7 @@ exports.listUsers = function (req, res) {
             if (users) {
                 res.json(200, {users: users});
             } else {
-                callback(500); // Server Error
+                res.send(500);
             }
         });
 };
@@ -79,6 +79,7 @@ exports.getUser = function (req, res) {
 
 // POST /services/user
 exports.addUser = function (req, res) {
+    //console.log(req.body.user);
     var user = req.body.user;
     if (user && user.username && user.password && user.email && user.device_type) {
         new svmp.User({
@@ -90,7 +91,8 @@ exports.addUser = function (req, res) {
             volume_id: ''
         }).save(function (err) {
                 if (err) {
-                    res.json(500, {msg: "Error adding user"});
+                    //res.json(500, {msg: "Error adding user"});
+                    res.send(500);
                 } else {
                     res.send(200);
                 }
