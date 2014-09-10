@@ -1,0 +1,60 @@
+<section data-ng-controller="AdminController" data-ng-init="listPending()">
+    <div class="row">
+        <div class="title-header col-md-12">
+            <i class="glyphicon glyphicon-inbox"></i>&nbsp;Pending Users
+            <small class="lt-gray">( {{total}} )</small>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div data-ng-show="error" class="text-danger">
+                <strong>{{error}}</strong>
+            </div>
+            <!-- INTEGRATE IN FUTURE
+             <table data-ng-table="tableParams" class="table table-striped">
+                <tr data-ng-repeat="user in users | orderBy:'created'">
+                    <td data-title="'Username'">{{user.username}}</td>
+                    <td data-title="'Email'">{{user.email}}</td>
+                    <td data-title="'Created'">{{user.created | date:'M/d/yy H:mm a'}}</td>
+                    <td data-title="'Role'">{{user.roles[0]}}</td>
+                    <td>
+                        <button id="{{user._id}}" data-ng-click="approve(user)" class="btn-xs btn btn-success"><i
+                                class="glyphicon glyphicon-thumbs-up white"></i> Approve
+                        </button>
+                        &nbsp;&nbsp;
+                        <button id="{{user._id}}" data-ng-click="deny(user)" class="btn-xs btn btn-danger"><i
+                                class="glyphicon glyphicon-thumbs-down white"></i> Deny
+                        </button>
+                    </td>
+                </tr>
+            </table>-->
+            <table class='table table-hover'>
+                <thead>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Created</th>
+                <th>Role</th>
+                <th></th>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="user in users | orderBy:'created'">
+                    <td>{{user.username}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.created | date:'M/d/yy H:mm a'}}</td>
+                    <td>{{user.roles[0]}}</td>
+                    <td>
+                        <button id="{{user._id}}" data-ng-click="approve(user)" class="btn-xs btn btn-success"><i
+                                class="glyphicon glyphicon-thumbs-up white"></i> Approve
+                        </button>
+                        &nbsp;&nbsp;
+                        <button id="{{user._id}}" data-ng-click="deny(user)" class="btn-xs btn btn-danger"><i
+                                class="glyphicon glyphicon-thumbs-down white"></i> Deny
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,40 @@
+<section data-ng-controller="AdminController" data-ng-init="listApproved()">
+    <div class="row">
+        <div class="title-header col-md-12">
+            <i class="glyphicon glyphicon-ok-circle"></i>&nbsp;Approved Users
+            <small class="lt-gray">( {{total}} )</small>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <table class='table table-hover'>
+            <thead>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Volume Id</th>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="user in users | orderBy:'created'">
+                <td><a data-ng-href="#!/admin/user/{{user._id}}">{{user.username}}</a></td>
+                <td>{{user.email}}</td>
+                <td>{{user.roles[0]}}</td>
+                <td data-ng-switch on="user.volume_id">
+
+                    <div data-ng-switch-when="pending" class="progress progress-striped active">
+                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;">
+                            creating volume</div>
+                    </div>
+
+                    <button data-ng-switch-when="" id="{{user._id}}" data-ng-click="createVolume(user)" class="btn-xs btn btn-warning"><i
+                            class="glyphicon glyphicon-hdd white"></i> Create Volume
+                    </button>
+
+                    <a href="#" ng-switch-default>{{user.volume_id}}</a>
+
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

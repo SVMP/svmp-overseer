@@ -1,0 +1,75 @@
+html {
+    font-family: "Helvetica Neue", "DejaVu Sans", "Verdana", sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    overflow-y: scroll;
+}
+
+h1 {
+    font-family: "Gill Sans";
+}
+section {
+    font-size: 16px;
+}
+
+section a:hover {
+    color: #DF7401;
+    text-decoration: none;
+}
+
+label {
+    color: #777777;
+    font-weight: normal;
+}
+
+.title-header {
+    font-family: "Gill Sans";
+    font-size: 2em;
+    color: #DF7401;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.content {
+    margin-top: 60px;
+}
+.undecorated-link:hover {
+    text-decoration: none;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+/** For white glyphicons */
+.white, .white a {
+    color: #fff;
+}
+
+.lt-gray {
+    color: #848484;
+}
+
+@media (min-width: 992px) {
+    .nav-users {
+        position: fixed;
+    }
+}
+
+.remove-account-container {
+    display: inline-block;
+    position: relative;
+}
+
+.btn-remove-account {
+    top: 10px;
+    right: 10px;
+    position: absolute;
+}
+
+.error-box {
+    padding-top: 60px;
+    color: red;
+    font-size: 2em;
+}

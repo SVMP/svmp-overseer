@@ -1,0 +1,98 @@
+<section data-ng-controller="AdminController" data-ng-init="findOne()">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Change User's role</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" novalidate>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Username:</label>
+
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.username}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Email:</label>
+
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.email}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Created:</label>
+
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.created | date:'M/d/yy H:mm a' }}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Device Type:</label>
+
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.device_type}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Role:</label>
+
+                            <div class="col-md-8">
+                                <input type="radio" ng-model="user.roles[0]" value="user"/> User <br/>
+                                <input type="radio" ng-model="user.roles[0]" value="admin"/> Admin
+                            </div>
+                        </div>
+                        <br/>
+
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-10">
+                                <button type="button" data-ng-click="updateRole(user)" class="btn btn-default btn-md">
+                                    Update Role
+                                </button>
+                            </div>
+                        </div>
+                        <div data-ng-show="error" class="text-danger">
+                            <strong>{{error}}</strong>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-md-offset-3">
+            <div class="panel panel-danger">
+                <div class="panel-heading">Delete the User</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" novalidate>
+                        <div data-ng-show="user.volume_id.length > 0" class="form-group">
+                            <div class="checkbox col-lg-offset-2 col-md-10">
+                                <label>
+                                    <p>
+                                        User has a volume associated with this account:
+                                        <br/>
+                                        <small>ID: {{user.volume_id}}</small>
+                                    </p>
+                                    <input type="checkbox" ng-model="rmvolume">
+                                    Delete the Volume with the User
+                                </label>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-10">
+                                <button type="button" data-ng-click="deleteUser(user)" class="btn btn-danger btn-md">
+                                    Delete User
+                                </button>
+                            </div>
+                        </div>
+                        <div data-ng-show="error" class="text-danger">
+                            <strong>{{error}}</strong>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

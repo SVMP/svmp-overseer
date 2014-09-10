@@ -1,0 +1,19 @@
+<section class="row" data-ng-controller="SettingsController">
+	<h2 class="col-md-12 text-center">Account Status</h2>
+	<div class="col-md-12 text-center">
+        <p ng-if='!user.approved'>
+            <span class="label label-warning">Pending</span>
+            <br/><br/>
+            Your account is awaiting approval. Once approved, you'll
+            <br/>
+            receive an email with instructions.
+        </p>
+        <p ng-if='user.approved'>
+            <span class="label label-success">Approved</span>
+            <br/><br/>
+           Download the client from here...
+        </p>
+        <br/>
+        <h4>Your email on account: {{user.email}}</h4>
+	</div>
+</section>

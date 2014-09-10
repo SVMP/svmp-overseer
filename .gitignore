@@ -8,3 +8,4 @@ app/tests/coverage/
 config-local.js
 config-local.yaml
 TODO.txt
+.bower-*/
