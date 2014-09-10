@@ -89,12 +89,12 @@ exports.addUser = function (req, res) {
             password_change_needed: true,
             device_type: user.device_type,
             volume_id: ''
-        }).save(function (err) {
+        }).save(function (err,u,num) {
                 if (err) {
                     //res.json(500, {msg: "Error adding user"});
                     res.send(500);
                 } else {
-                    res.send(200);
+                    res.send(200, {id: u.id});
                 }
             });
     } else {
@@ -122,7 +122,6 @@ exports.deleteUser = function (req, res) {
 exports.updateUser = function (req, res) {
     var username = req.params.username;
     var updates = req.body.update;
-
     if (username && updates) {
         svmp.User.update({username: username}, updates, function (err, numberAffected, raw) {
             if (err) {

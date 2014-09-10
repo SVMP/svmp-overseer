@@ -40,7 +40,7 @@ module.exports = function (grunt) {
     grunt.option('force', true);
 
     // Run like: > grunt create-server-token:dave
-    grunt.registerTask('create-service-token', 'Make Token', function (username) {
+    grunt.registerTask('create-admin-service-token', 'Make Token', function (username) {
         var
             fs = require('fs'),
             svmp = require('./lib/svmp'),
