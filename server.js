@@ -23,49 +23,18 @@
 
 var
     svmp = require('./lib/svmp'),
-    express = require('express'),
-    bodyParser = require('body-parser'),
-    auth = require('./lib/authentication'),
-    vmManager = require('./lib/cloud/vm-manager'),
-    app = express();
+    config = require('./lib/config'),
+    path = require('path'),
+    vmManager = require('./lib/cloud/vm-manager');
 
 // Bootup SVMP object
 svmp.init();
 
+var app = require('./lib/console/express')();
+
 // Run an interval to terminate expired VMs (those that have been idle for too long)
 vmManager.startExpirationInterval();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-
-
-/** Commented out for now. Not used anymore? **/
-// Check Token for requests to /api/*
-// app.all('/api/*', auth.checkToken);
-
-// Check Token for admin role to /services/*
-app.all('/services/*', auth.checkAdminToken);
-
-// Load routes
-require('./app/routes/index')(app);
-
-// Fall through: on Error, 500.  Otherwise 404
-app.use(function (err, req, res, next) {
-    // If the error object doesn't exists
-    if (!err) return next();
-
-    // Log it
-    svmp.logger.error(err.stack);
-
-    return res.json(500, {
-        msg: "Oops, there was an error.  Please try again."
-    });
-});
-
-// Assume 404 since no middleware responded
-app.use(function (req, res) {
-    res.json(404, {msg: 'Not Found'});
-});
 
 var port = svmp.config.get('port');
 
@@ -73,16 +42,13 @@ if (svmp.config.isEnabled('enable_ssl')) {
     var https = require('https');
     var fs = require('fs');
 
-    //svmp.config.configTls();
     var options = svmp.config.get('tls_options');
 
     var server = https.createServer(options, app);
     server.listen(port);
 
     svmp.logger.info('SVMP REST API running on port %d with SSL', port);
-
 } else {
-
     app.listen(port);
     svmp.logger.info('SVMP REST API running on port %d', port);
 }

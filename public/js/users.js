@@ -55,35 +55,35 @@ angular.module('users').config(['$stateProvider',
         $stateProvider.
             state('profile', {
                 url: '/settings/profile',
-                templateUrl: 'modules/users/views/settings/profile.client.view.html'
+                templateUrl: '/templates/users/profile.client.view.html'
             }).
             state('password', {
                 url: '/settings/password',
-                templateUrl: 'modules/users/views/settings/change-password.client.view.html'
+                templateUrl: '/templates/users/change-password.client.view.html'
             }).
             state('signup', {
                 url: '/signup',
-                templateUrl: 'modules/users/views/signup.client.view.html'
+                templateUrl: '/templates/users/signup.client.view.html'
             }).
             state('signin', {
                 url: '/signin',
-                templateUrl: 'modules/users/views/signin.client.view.html'
+                templateUrl: '/templates/users/signin.client.view.html'
             }).
             state('listpending', {
                 url: '/admin/pending',
-                templateUrl: 'modules/users/views/admin/pending.client.view.html'
+                templateUrl: '/templates/users/pending.client.view.html'
             }).
             state('listapproved', {
                 url: '/admin/approved',
-                templateUrl: 'modules/users/views/admin/approved.client.view.html'
+                templateUrl: '/templates/users/approved.client.view.html'
             }).
             state('edituser', {
                 url: '/admin/user/:userId',
-                templateUrl: 'modules/users/views/admin/edit.user.client.view.html'
+                templateUrl: '/templates/users/edit.user.client.view.html'
             }).
             state('uservolumes', {
                 url: '/admin/volumes',
-                templateUrl: 'modules/users/views/openstack/volumes.client.view.html'
+                templateUrl: '/templates/users/volumes.client.view.html'
             });
     }
 ]);
@@ -131,7 +131,7 @@ angular.module('users').factory('Volume', ['$q', '$timeout', '$rootScope', '$htt
     }
 ]);
 
-ngular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
+angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
     function ($scope, $http, $location, Authentication) {
         $scope.authentication = Authentication;
 
