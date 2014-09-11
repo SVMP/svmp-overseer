@@ -19,12 +19,21 @@
 
 'use strict';
 
+var svmp = require('../../lib/svmp');
+
+
+function logAccess(req, res, next){
+    svmp.logger.info('%s %s %s %s', new Date().toString(), req.ip, req.user.username, req.path);
+    next();
+}
+
 module.exports = function (app) {
 
     var account = require('../controllers/account'),
         users = require('../controllers/users'),
         vmSessions = require('../controllers/vm-sessions'),
-        cloud = require('../controllers/cloud');
+        cloud = require('../controllers/cloud'),
+        auth = require('../../lib/authentication');
 
 
     /******  User Account ******/
@@ -40,6 +49,8 @@ module.exports = function (app) {
     /****** Admin Services ******/
    /** Any url prefixed with /services/* requires admin privs **/
 
+   // API: check Token for admin role to /services/*
+   app.all('/services/*', auth.checkAdminToken);
 
     /** Users **/
     app.route('/services/users')

@@ -22,17 +22,8 @@ var
     passport = require('passport'),
     svmp = require('../../../lib/svmp'),
     lodash = require('lodash');
-    //mail = require('../utils/mail'),
+//mail = require('../utils/mail'),
 
-
-/**
- * Module dependencies.
- */
-exports.index = function(req, res) {
-    res.render('index', {
-        user: req.user || null
-    });
-};
 
 /**
  * Get the error message from error object
@@ -56,6 +47,16 @@ var getErrorMessage = function (err) {
     return message;
 };
 
+
+/**
+ * Module dependencies.
+ */
+exports.index = function (req, res) {
+    res.render('index', {
+        user: req.user || null
+    });
+};
+
 /**
  * Signup
  */
@@ -63,7 +64,7 @@ exports.signup = function (req, res) {
     // For security measurement we remove the roles from the req.body object
     delete req.body.roles;
     // Init Variables
-    var user = new User(req.body);
+    var user = new svmp.User(req.body);
     // Then save the user
     user.save(function (err) {
         if (err) {
@@ -129,7 +130,7 @@ exports.changePassword = function (req, res, next) {
     var message = null;
 
     if (req.user) {
-        User.findById(req.user.id, function (err, user) {
+        svmp.User.findById(req.user.id, function (err, user) {
             if (!err && user) {
                 if (user.authenticate(passwordDetails.currentPassword)) {
                     if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
@@ -178,7 +179,7 @@ exports.changePassword = function (req, res, next) {
 exports.list = function (req, res) {
     var approvedFlag = req.query.approved === 'true';
 
-    User.find({approved: approvedFlag})
+    svmp.User.find({approved: approvedFlag})
         .sort('-created')
         .select('username email created approved roles device_type volume_id')
         .exec(function (err, results) {
@@ -196,7 +197,7 @@ exports.read = function (req, res) {
     var userid = req.params.uid;
     var message = null;
 
-    User.findById(userid, function (err, user) {
+    svmp.User.findById(userid, function (err, user) {
         if (err) {
             return res.send(400, {
                 message: getErrorMessage(err)
@@ -213,7 +214,7 @@ exports.update = function (req, res) {
     var email = req.query.email === 'true';
     var message = null;
 
-    User.findById(userId, function (err, user) {
+    svmp.User.findById(userId, function (err, user) {
         if (err) {
             return res.send(400, {
                 message: getErrorMessage(err)
@@ -239,7 +240,7 @@ exports.update = function (req, res) {
 exports.deleteUser = function (req, res) {
     var userId = req.params.uid;
     var message = null;
-    User.remove({ _id: userId}, function (err, r) {
+    svmp.User.remove({ _id: userId}, function (err, r) {
         if (err) {
             return res.send(400, {
                 message: getErrorMessage(err)
@@ -252,7 +253,7 @@ exports.deleteUser = function (req, res) {
 
 exports.createVolume = function (req, res) {
     var user_id = req.body.uid;
-    User.findById(user_id, function (err, user) {
+    svmp.User.findById(user_id, function (err, user) {
         if (err) {
             return res.send(400, {
                 message: getErrorMessage(err)

@@ -18,9 +18,19 @@
  */
 'use strict';
 
+var csrf = require('csurf');
+
 module.exports = function(app) {
     // Root routing
     var console = require('../controllers/console');
+
+    // app.use('/console/*', csrf());
+    /*app.use(/console/*',function (req, res, next) {
+     res.cookie('XSRF-TOKEN', req.csrfToken());
+     next();
+     });*/
+
+
 
     app.route('/')
         .get(console.index);

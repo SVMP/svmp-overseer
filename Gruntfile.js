@@ -60,8 +60,75 @@ module.exports = function (grunt) {
         console.log(token);
     });
 
+    grunt.registerTask('add-default-admin', 'add default admin account to the database', function () {
+        var
+            svmp = require('./lib/svmp'),
+            done = this.async();
 
+        svmp.init();
 
+        svmp.User.find({username: 'mitre', roles: 'admin'}, function (err, admins) {
+            if (admins && admins.length === 0) {
+                var default_admin = {
+                    username: 'mitre',
+                    password: 'mitre1234',
+                    email: 'mitre@here.com',
+                    approved: true,
+                    roles: ['admin']
+                };
+                svmp.User.create(default_admin, function (err, r) {
+                    if (err) {
+                        console.log(err);
+                        svmp.shutdown();
+                        done();
+                    } else {
+                        console.log('Created user: ', default_admin);
+                        svmp.shutdown();
+                        done();
+                    }
+                });
+            } else {
+                console.log('Default admin already exists!');
+                svmp.shutdown();
+                done();
+            }
+        });
+    });
+
+    grunt.registerTask('remove-default-admin', 'remove default admin account from the database', function () {
+        var
+            svmp = require('./lib/svmp'),
+            done = this.async();
+
+        svmp.init();
+
+        svmp.User.findOne({username: 'mitre'}, function (err, defaultAdmin) {
+            if (err) {
+                console.log(err);
+                svmp.shutdown();
+                done();
+            } else {
+                if (defaultAdmin) {
+                    defaultAdmin.remove(function (errR, result) {
+                        if (errR) {
+                            console.log(errR);
+                            svmp.shutdown();
+                            done();
+                        } else {
+                            console.log('Remove default admin: ', result);
+                            svmp.shutdown();
+                            done();
+                        }
+                    });
+
+                } else {
+                    console.log('Default admin account does not exist');
+                    svmp.shutdown();
+                    done();
+                }
+            }
+        });
+    });
 
     // Default task(s).
     grunt.registerTask('default', ['mochaTest']);
