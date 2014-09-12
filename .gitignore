@@ -9,3 +9,4 @@ config-local.js
 config-local.yaml
 TODO.txt
 .bower-*/
+public/lib/
