@@ -79,9 +79,12 @@ exports.getUser = function (req, res) {
 
 // POST /services/user
 exports.addUser = function (req, res) {
-    //console.log(req.body.user);
     var user = req.body.user;
-    if (user && user.username && user.password && user.email && user.device_type) {
+    var devices = svmp.config.get("new_vm_defaults:images");
+    if (!user.device_type || user.device_type.length == 0 || !devices.hasOwnProperty(user.device_type)) {
+        res.json(400, {msg: 'Invalid device type specified'});
+    }
+    else if (user && user.username && user.password && user.email) {
         new svmp.User({
             username: user.username,
             password: user.password,
