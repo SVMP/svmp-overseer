@@ -7,4 +7,4 @@ app/tests/coverage/
 *.iml
 config-local.js
 config-local.yaml
-TODO.txt
+*.txt

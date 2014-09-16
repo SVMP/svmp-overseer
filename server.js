@@ -38,29 +38,14 @@ vmManager.startExpirationInterval();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
-
-/** Commented out for now. Not used anymore? **/
-// Check Token for requests to /api/*
-// app.all('/api/*', auth.checkToken);
+// log requests and responses (this route gets loaded before any other middleware)
+require('./app/routes/log')(app);
 
 // Check Token for admin role to /services/*
 app.all('/services/*', auth.checkAdminToken);
 
 // Load routes
 require('./app/routes/index')(app);
-
-// Fall through: on Error, 500.  Otherwise 404
-app.use(function (err, req, res, next) {
-    // If the error object doesn't exists
-    if (!err) return next();
-
-    // Log it
-    svmp.logger.error(err.stack);
-
-    return res.json(500, {
-        msg: "Oops, there was an error.  Please try again."
-    });
-});
 
 // Assume 404 since no middleware responded
 app.use(function (req, res) {
