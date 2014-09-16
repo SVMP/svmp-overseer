@@ -60,29 +60,33 @@ exports.changeUserPassword = function(req,res) {
     var oldPassword = req.body.password;
     var newPassword = req.body.newPassword;
 
-    svmp.User.findOne({username: un}, function (err, user) {
-        if (err) {
-            res.send(400); // Bad Request
-        }
-        else if (user && user.authenticate(oldPassword)) {
+    if (!un || !oldPassword || !newPassword) {
+        res.json(400, {msg: 'Missing required field(s)'});
+    } else {
+        svmp.User.findOne({username: un}, function (err, user) {
+            if (err) {
+                res.json(500, {msg: 'Internal error'});
+            }
+            else if (user && user.authenticate(oldPassword)) {
 
-            user.password = newPassword;
-            user.password_change_needed = false;
+                user.password = newPassword;
+                user.password_change_needed = false;
 
-            user.save(function (err1, r) {
-                if (err1) {
-                    // user model validation failed
-                    res.send(400);
-                } else {
-                    sendToken(res, {'user': user});
-                }
-            });
-        }
-        else {
-            // failed authentication, reject
-            res.send(401); // UnAuth
-        }
-    });
+                user.save(function (err1, r) {
+                    if (err1) {
+                        // user model validation failed
+                        res.json(400, {msg: 'Failed validation'});
+                    } else {
+                        sendToken(res, {'user': user});
+                    }
+                });
+            }
+            else {
+                // failed authentication, reject
+                res.json(401, {msg: 'Error authenticating'}); // UnAuth
+            }
+        });
+    }
 
 };
 
