@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SVMP HTML5 Client</title>
+        <link rel="stylesheet" href="/static/css/index.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    </head>
+    <body>
+        <div id="content">
+            <video id="rtcvidstream" class="hide" autoplay></video>
+            <canvas id="touchcanvas" class="hide"></canvas>
+        </div>
+        <script src="/static/js/dependencies/Long.min.js"></script>
+        <script src="/static/js/dependencies/ByteBufferAB.min.js"></script>
+        <script src="/static/js/dependencies/ProtoBuf.min.js"></script>
+        <script src="/static/js/dependencies/jquery-2.1.1.min.js"></script>
+        <script src="/static/js/dependencies/RTCPeerConnection-v1.5.js"></script>
+        <script src="/static/js/dependencies/jstz-1.0.4.min.js"></script>
+        <script src="/static/js/dependencies/jquery.cookie.js"></script>
+        <script src="/static/js/handlers.js"></script>
+        <script src="/static/js/utility.js"></script>
+        <script>
+            // validate browser to make sure it's supported, and set identifying variable in window
+            checkBrowser();
+
+            // check to make sure we have a session cookie
+            $.cookie.json = true;
+            window.svmpData = $.cookie("svmpData");
+            if (!window.svmpData) {
+                alert("No session data found, please log in first.");
+                window.location.replace("/webclient-login");
+            }
+            window.svmpState = "auth"; // state 1: authenticated
+            console.log('SVMP state: "auth"');
+
+            window.isMobile = ($("#touchcanvas").css("position") == "absolute");
+            // TODO: enable TLS option
+            var url = "ws://" + window.svmpData.server.host + ":" + window.svmpData.server.port;
+            var ws = new WebSocket(url, window.svmpData.sessionInfo.token);
+            ws.binaryType = "arraybuffer";
+            var ProtoBuf = dcodeIO.ProtoBuf;
+            var builder = ProtoBuf.loadProtoFile("/static/data/svmp.proto");
+            var svmp = builder.build("svmp");
+
+            ws.onopen = function() {
+                console.log("ws opened");
+                window.svmpState = "connected"; // state 2: connected to the WebSocket
+            console.log('SVMP state: "auth" -> "connected"');
+            };
+
+            ws.onmessage = function(ev) {
+                var resBuilder = builder.build("svmp.Response");
+                var res = resBuilder.decode(ev.data);
+                handleResponse(res, ws, svmp);
+            };
+
+            ws.onclose = function(ev) {
+                alert("Socket has been closed: " + ev.data);
+                console.log("socket close: " + ev.data);
+            };
+            
+            ws.onerror = function(ev) {
+                alert("Socket encountered error: " + ev.data);
+                console.log("socket error: " + ev.data);
+            };
+
+            window.socket = ws;
+
+            //Render WebRTC video onto canvas rather than directly in <video> element so we can get touch events
+            var canvas            = document.getElementById("touchcanvas");
+            window.canvasctx    = canvas.getContext('2d');
+            var vid                = document.getElementById("rtcvidstream");
+
+            vid.addEventListener('play', function() {
+                this_ = this;
+                setTimeout(function drawloop() {
+                    try {
+                        window.canvasctx.drawImage(this_, 0, 0);
+                    }
+                    catch(ex) {
+                        if(ex.name == "NS_ERROR_NOT_AVAILABLE") {
+                            setTimeout(drawloop, 0);
+                        }
+                        else {
+                            throw ex;
+                        }
+                    }
+                    setTimeout(drawloop, 1000 / 60);
+                }, 0);
+            }, 0);
+
+            //Capture touch events
+            canvas.addEventListener("touchstart", function(ev) { handleTouchStart(ev, ws, svmp) }, false);
+            canvas.addEventListener("touchend", function(ev) { handleTouchEnd(ev, ws, svmp) }, false);
+            canvas.addEventListener("touchmove", function(ev) { handleTouchMove(ev, ws, svmp) }, false);
+            //Capture mouse events
+            canvas.addEventListener("mousedown", function(ev) { handleMouseStart(ev, ws, svmp) }, false);
+            canvas.addEventListener("mouseup", function(ev) { handleMouseEnd(ev, ws, svmp) }, false);
+            canvas.addEventListener("mousemove", function(ev) { handleMouseMove(ev, ws, svmp) }, false);
+        </script>
+    </body>
+</html>

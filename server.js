@@ -47,6 +47,9 @@ app.all('/services/*', auth.checkAdminToken);
 // Load routes
 require('./app/routes/index')(app);
 
+// Load webclient middleware
+require('./app/routes/webclient')(app);
+
 // Assume 404 since no middleware responded
 app.use(function (req, res) {
     res.json(404, {msg: 'Not Found'});

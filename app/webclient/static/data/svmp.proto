@@ -1,0 +1,422 @@
+// svmp.proto
+// Client to Proxy Server protocol
+
+// Copyright (c) 2012-2014, The MITRE Corporation, All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package svmp;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "org.mitre.svmp.protocol";
+option java_outer_classname = "SVMPProtocol";
+
+// Client to server message wrapper
+message Request
+{
+  required RequestType type = 1;
+
+  enum RequestType {
+    VIDEO_PARAMS  = 0;
+    TOUCHEVENT    = 1;
+    SENSOREVENT   = 2;
+    LOCATION      = 3;
+    INTENT        = 4;
+    SCREENINFO    = 5;
+    WEBRTC        = 6;
+    ROTATION_INFO = 7;
+    PING          = 8; // client-initiated ping measurement (ms)
+    TIMEZONE      = 9;
+    APPS          = 10; // client request for available apps on the VM
+    KEYEVENT      = 11;
+    CONFIG        = 12;
+  }
+
+  // repeated to allow batching multiple events in a single message
+  repeated TouchEvent touch = 2;
+  repeated SensorEvent sensor = 3;
+
+  optional LocationRequest locationRequest = 6;
+  optional Intent intent = 7;
+
+  optional WebRTCMessage webrtcMsg = 9;
+  optional RotationInfo rotationInfo = 10;
+  optional Ping pingRequest = 11;
+  optional VideoStreamInfo videoInfo = 12; // server->VM message
+  optional string timezoneId = 13;
+  optional AppsRequest apps = 14;
+  optional KeyEvent key = 15;
+  optional Config config = 16;
+}
+
+// Server to client message wrapper
+message Response
+{
+
+  enum ResponseType {
+    ERROR         = 0;
+    AUTH          = 1;
+    VMREADY       = 2;
+    SCREENINFO    = 3; // touch screen coordinate scaling info
+    INTENT        = 4; // intent data in 'proxy'
+    NOTIFICATION  = 5; // notification data in 'proxy'
+    LOCATION      = 6; // location request
+    WEBRTC        = 7; // WebRTC signalling message
+    PING          = 8; // response to client ping measurement (ms)
+    APPS          = 9; // response to client request for available apps
+  }
+
+  required ResponseType type = 1;
+
+  optional AuthResponse authResponse = 3;
+  optional Intent intent = 4;
+  optional Notification notification = 5;
+
+  optional LocationResponse locationResponse = 6;
+  optional Ping pingResponse = 7;
+  optional AppsResponse apps = 8;
+
+  optional ScreenInfo screenInfo = 16;
+  optional VideoStreamInfo videoInfo = 17;
+  optional WebRTCMessage webrtcMsg = 18;
+}
+
+//=====================================================================
+// Cross platform intent & notification IPC
+//=====================================================================
+
+enum IntentAction
+{
+  ACTION_VIEW = 1;
+  ACTION_DIAL = 2;
+}
+
+// C<->S
+message Intent {
+  //Corresponds to Intent 'action' parameter, but limited to supported actions
+  required IntentAction action = 1;
+
+  //Encode all bundle extras as strings, and decode them later into specific data types
+  repeated Tuple extras = 2;
+
+  //Correspond to optional Intent parameters
+  optional string data = 3;
+  repeated int32 flags = 4;
+  repeated string categories = 5;
+
+  //For approximating a Java Map structure (Map<String,String>)
+  message Tuple {
+    required string key = 1;
+    required string value = 2;
+  }
+}
+
+// C<->S
+message Notification {
+  //All of the following correspond directly to fields in Android's Notification object,
+  //with the exception of the icon fields which directly include image data rather than references
+  required string contentTitle = 1;
+  required string contentText = 2;
+  required bytes smallIcon = 3;
+  optional bytes largeIcon = 4;
+  // TODO: add additional optional notification fields as necessary
+}
+
+//=====================================================================
+// Touch screen
+//=====================================================================
+
+// C->S
+message TouchEvent {
+  required int32 action = 1;
+  repeated PointerCoords items = 2;
+
+  optional int64 downTime = 3;
+  optional int64 eventTime = 4;
+  repeated HistoricalEvent historical = 5;
+  optional int32 edgeFlags = 6;
+
+  message PointerCoords {
+    required int32 id = 1;
+    required float x = 2;
+    required float y = 3;
+  }
+
+  message HistoricalEvent {
+    required int64 eventTime = 1;
+    repeated PointerCoords coords = 2;
+  }
+}
+
+// S->C
+message ScreenInfo {
+  required int32 x = 1;
+  required int32 y = 2;
+}
+
+//=====================================================================
+// Sensors
+//=====================================================================
+
+// Synced with android.hardware.Sensor
+enum SensorType {
+  ACCELEROMETER       = 1;
+  MAGNETIC_FIELD      = 2;
+  ORIENTATION         = 3;
+  GYROSCOPE           = 4;
+  LIGHT               = 5;
+  PRESSURE            = 6;
+  TEMPERATURE         = 7;
+  PROXIMITY           = 8;
+  GRAVITY             = 9;
+  LINEAR_ACCELERATION = 10;
+  ROTATION_VECTOR     = 11;
+  RELATIVE_HUMIDITY   = 12;
+  AMBIENT_TEMPERATURE = 13;
+}
+
+// C->S: Sensor update event
+message SensorEvent {
+  required SensorType type = 1;
+  required int32 accuracy  = 2;
+  required int64 timestamp = 3;
+  repeated float values = 4;
+}
+
+//=====================================================================
+// Location
+//=====================================================================
+
+// C->S: Location provider information
+message LocationProviderInfo {
+  required string provider  = 1;
+  required bool requiresNetwork = 2;
+  required bool requiresSatellite = 3;
+  required bool requiresCell = 4;
+  required bool hasMonetaryCost = 5;
+  required bool supportsAltitude = 6;
+  required bool supportsSpeed = 7;
+  required bool supportsBearing = 8;
+  required int32 powerRequirement = 9;
+  required int32 accuracy = 10;
+}
+
+// C->S: Location provider status update
+message LocationProviderStatus {
+  required string provider = 1;
+  required int32 status    = 2;
+  //Encode all bundle extras as strings, and decode them later into specific data types
+  repeated Tuple extras    = 3;
+
+  //For approximating a Java Map structure (Map<String,String>)
+  message Tuple {
+    required string key   = 1;
+    required string value = 2;
+  }
+}
+
+// C->S: Location provider enabled update
+message LocationProviderEnabled {
+  required string provider = 1;
+  required bool enabled    = 2;
+}
+
+// C->S: Location update event
+message LocationUpdate {
+  required double latitude  = 1;
+  required double longitude = 2;
+  required int64 time       = 3;
+  optional string provider  = 4;
+  optional float accuracy   = 5;
+  optional double altitude  = 6;
+  optional float bearing    = 7;
+  optional float speed      = 8;
+}
+
+// C->S: Wrapper for LocationProviderInfo, LocationProviderStatus,
+// LocationProviderEnabled, and LocationProviderUpdate messages
+message LocationRequest {
+  required LocationRequestType type                = 1;
+
+  enum LocationRequestType {
+    PROVIDERINFO    = 1;
+    PROVIDERSTATUS  = 2;
+    PROVIDERENABLED = 3;
+    LOCATIONUPDATE  = 4;
+  }
+
+  optional LocationProviderInfo providerInfo       = 2;
+  optional LocationProviderStatus providerStatus   = 3;
+  optional LocationProviderEnabled providerEnabled = 4;
+  optional LocationUpdate update                   = 5;
+}
+
+// S->C: Location update request (one-time or long-term)
+message LocationSubscribe {
+  required LocationSubscribeType type = 1;
+
+  enum LocationSubscribeType {
+    SINGLE_UPDATE    = 1;
+    MULTIPLE_UPDATES = 2;
+  }
+
+  required string provider            = 2;
+  optional int64 minTime              = 3;
+  optional float minDistance          = 4;
+}
+
+// S->C: Unsubscribe from long-term location updates
+message LocationUnsubscribe {
+  required string provider = 1;
+}
+
+// S->C: Wrapper for LocationSubscribe and LocationUnsubscribe messages
+message LocationResponse {
+  required LocationResponseType type       = 1;
+
+  enum LocationResponseType {
+    SUBSCRIBE   = 1;
+    UNSUBSCRIBE = 2;
+  }
+
+  optional LocationSubscribe subscribe     = 2;
+  optional LocationUnsubscribe unsubscribe = 3;
+}
+
+//=====================================================================
+// Auth
+//=====================================================================
+
+// S->C
+message AuthResponse {
+  required AuthResponseType type = 1;
+
+  enum AuthResponseType {
+    AUTH_FAIL            = 0; // sent in response to an AuthRequest
+    SESSION_MAX_TIMEOUT  = 1; // sent when the session times out
+  }
+
+}
+
+//=====================================================================
+// WebRTC Signalling
+//=====================================================================
+
+// Message format based on the Javascript Session Establishment Protocol (JSEP)
+// and the AppRTC demonstration app.
+
+// See https://tools.ietf.org/html/draft-ietf-rtcweb-jsep-03
+
+message WebRTCMessage {
+
+  enum WebRTCType {
+    OFFER = 1;
+    ANSWER = 2;
+    CANDIDATE = 3;
+    BYE = 4;
+  }
+
+  optional WebRTCType type = 1;
+  optional string json = 2;
+}
+
+// S->C
+message VideoStreamInfo {
+  optional string iceServers = 1;
+  optional string pcConstraints = 2;
+  optional string videoConstraints = 3;
+}
+
+//=====================================================================
+// Rotation Information
+//=====================================================================
+
+// we can't rely on sensor data to accurately trigger screen rotations
+// instead, we send a message from the client to do so
+
+// C->S
+message RotationInfo  {
+  required int32 rotation = 1;
+}
+
+//=====================================================================
+// Other
+//=====================================================================
+
+// C<->S
+message Ping {
+  required int64 startDate = 1;
+}
+
+//=====================================================================
+// App Information (for use in Single App Mode)
+//=====================================================================
+
+// C->S
+message AppsRequest {
+  enum AppsRequestType {
+    REFRESH = 1;
+    LAUNCH  = 2;
+  }
+
+  required AppsRequestType type = 1;
+  // used for type REFRESH
+  repeated AppInfo current      = 2; // list of current apps, to be used during refresh
+  optional int32 screenDensity  = 3; // the screen density of the device
+  // used for type LAUNCH
+  optional string pkgName       = 4; // what app to launch, if any
+}
+
+// S->C
+message AppsResponse {
+  enum AppsResponseType {
+    REFRESH = 1; // response to a REFRESH request
+    EXIT    = 2; // when the app has exited, this gets sent to the client
+  }
+
+  required AppsResponseType type = 1;
+  repeated AppInfo new           = 2; // list of apps to insert
+  repeated AppInfo updated       = 3; // list of apps to update (changed name/icon?)
+  repeated string removed        = 4; // list of apps to remove (only pkgName needed)
+}
+
+// C<->S
+message AppInfo {
+  required string pkgName = 1; // primary key, ex: org.mitre.svmp.client
+  required string appName = 2; // user-friendly name, ex: SVMP Client
+  optional bytes icon     = 3; // null in Request
+  optional bytes iconHash = 4; // null in Response
+}
+
+//=====================================================================
+// Keyboard events
+//=====================================================================
+
+// C->S
+message KeyEvent {
+  required int64 eventTime   = 1;
+  required int32 deviceId    = 2;
+  required int32 flags       = 3;
+  // the following attributes are used whenever action is not ACTION_MULTIPLE, OR key code is not KEYCODE_UNKNOWN
+  optional int64 downTime    = 4;
+  optional int32 action      = 5;
+  optional int32 code        = 6;
+  optional int32 repeat      = 7;
+  optional int32 metaState   = 8;
+  optional int32 scanCode    = 9;
+  optional int32 source      = 10;
+   // this attribute is used for the special case of a ACTION_MULTIPLE event with key code of KEYCODE_UNKNOWN
+  optional string characters = 11;
+}
+
+// C->S
+message Config {
+  optional bool hardKeyboard = 1; // whether or not we have a hard keyboard attached
+}

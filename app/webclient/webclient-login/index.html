@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SVMP HTML5 Client</title>
+        <link rel="stylesheet" href="/static/css/index.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    </head>
+    <body>
+        <div id="content">
+            <div id="loginbox">
+                <form id="loginform">
+                    <p>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    </p>
+                    <p>
+                    <label for="password">Password:</label>
+                    <input type="text" id="password" name="password" minlength="8" required>
+                    </p>
+                    <p>
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember Me</label><br />
+                    </p>
+                    <button value="submit">Go!</button>
+                    <span id="message" class="error"></span>
+                </form>
+            </div>
+        </div>
+        <script src="/static/js/dependencies/jquery-2.1.1.min.js"></script>
+        <script src="/static/js/dependencies/jquery.validate.min.js"></script>
+        <script src="/static/js/dependencies/jquery.cookie.js"></script>
+        <script src="/static/js/dependencies/date.js"></script>
+        <script src="/static/js/utility.js"></script>
+        <script>
+            // validate browser to make sure it's supported, and set identifying variable in window
+            checkBrowser();
+
+            // look for session cookie, redirect if necessary
+            $.cookie.json = true; // turns on automatic JSON parsing for jquery.cookie
+            var data = $.cookie("svmpData");
+            if (data) {
+                alert("You have an active session, now sending you to the video page...");
+                window.location.replace("/webclient-video");
+            }
+
+            // populate inputs if necessary
+            var remembered = $.cookie("svmpRemember");
+            if (remembered) {
+                // we found a cookie that told us to remember a username;
+                $("#username").val(remembered);
+                $("#remember").prop("checked", true);
+            }
+
+            // TODO: add change password page
+    
+            $("#loginform").submit(function(event) {
+                event.preventDefault();
+
+                // TODO: add basic input validation
+                var credentials = {
+                    username: $("#username").val(),
+                    password: $("#password").val()
+                };
+                var url = "/login";
+                submitCredentials(credentials, url);
+            });
+        </script>
+    </body>
+</html>
