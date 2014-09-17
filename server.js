@@ -39,7 +39,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 // log requests and responses (this route gets loaded before any other middleware)
+var morgan = require('morgan');
+morgan.token('remote-user', function(req, res){
+    if (typeof req.user === 'undefined' || typeof req.user.sub === 'undefined')
+        return 'anonymous_token';
+    else
+        return req.user.sub;
+});
+morgan.token('message', function(req, res) {
+    if (res.statusCode == 401) {
+        return 'Authentication failed: ' + res.error;
+    }
+});
+app.use(morgan(':remote-addr - :remote-user [:date] ":method :url" :status :message', { "stream": svmp.logger.stream }));
+// debug logger
 require('./app/routes/log')(app);
+
 
 // Check Token for admin role to /services/*
 app.all('/services/*', auth.checkAdminToken);

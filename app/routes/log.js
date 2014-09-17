@@ -44,20 +44,17 @@ module.exports = function (app) {
                 var that = this;
                 if (!token)
                     token = ""; // prevents JWT verification error
-                jwt.verify(token, getPubKey(), function (err, decoded) {
-                    // not every API call will contain a JWT; if it does (for admin APIs), pull the username out of it
-                    var reqUser = "";
-                    if (!err)
-                        reqUser = decoded.username + "@";
+                var decoded = jwt.decode(token);
+                // not every API call will contain a JWT; if it does (for admin APIs), pull the username out of it
+                var reqUser = reqUser = decoded.sub + "@";
 
-                    // debug: log the request address/method/URL and response status code
-                    svmp.logger.debug("Request (%s%s) %s '%s'; Response code: %d",
-                        reqUser, req.connection.remoteAddress, req.method, req.originalUrl, that.statusCode);
-                });
+                // debug: log the request address/method/URL and response status code
+                svmp.logger.debug("Request (%s%s) %s '%s'; Response code: %d",
+                    reqUser, req.connection.remoteAddress, req.method, req.originalUrl, that.statusCode);
             }
             if (logLevel === 'silly') {
                 // identify part of the JWT if the client presented one
-                var reqJWT = shortJWT(token);
+                var reqJWT = JSON.stringify(decoded);
                 var resJSON = JSON.parse(string);
                 // silly: log the JWT/body and response body
                 svmp.logger.silly("  Request JWT: '%s', JSON: %s; Response JSON: %s",
