@@ -7,6 +7,6 @@ app/tests/coverage/
 *.iml
 config-local.js
 config-local.yaml
-TODO.txt
 .bower-*/
 public/lib/
+*.txt

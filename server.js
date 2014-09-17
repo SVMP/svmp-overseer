@@ -35,7 +35,6 @@ var app = require('./lib/console/express')();
 // Run an interval to terminate expired VMs (those that have been idle for too long)
 vmManager.startExpirationInterval();
 
-
 var port = svmp.config.get('port');
 
 if (svmp.config.isEnabled('enable_ssl')) {

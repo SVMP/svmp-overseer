@@ -117,7 +117,7 @@ openstack:
     authUrl: "https://localhost:5000/"
     username: "test"
     password: "test"
-    tenantId: "0123456789abcdef0123456789abcdef"
+    # tenantId: "0123456789abcdef0123456789abcdef"
     tenantName: "test"
     region: "RegionOne"
 

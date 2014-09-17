@@ -148,7 +148,8 @@ module.exports = {
                     "type": "string"
                 },
                 "tenantId": {
-                    "required": true,
+                    // this can cause odd issues, leave it optional
+//                    "required": true,
                     "type": "string"
                 },
                 "tenantName": {
@@ -160,7 +161,8 @@ module.exports = {
                     "type": "string"
                 },
                 "region": {
-                    "required": true,
+                    // this can cause odd issues, leave it optional
+//                    "required": true,
                     "type": "string"
                 }
             }
