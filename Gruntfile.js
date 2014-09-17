@@ -56,7 +56,7 @@ module.exports = function (grunt) {
         delete process.env.passphrase;
 
         console.log("Create token for: ", username);
-        var token = jwt.sign({username: username, role: 'admin'}, privKey, {algorithm: svmp.config.get('jwt_signing_alg')});
+        var token = jwt.sign({sub: username, role: 'admin'}, privKey, {algorithm: svmp.config.get('jwt_signing_alg')});
         console.log(token);
     });
 
