@@ -52,6 +52,11 @@ module.exports = {
             }
         },
 
+        "session_secret": {
+            "required": true,
+            "type": "string"
+        },
+
         // ssl options
         "enable_ssl": {
             "type": "boolean"
