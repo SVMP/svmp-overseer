@@ -20,16 +20,22 @@
 
 var csrf = require('csurf');
 
-module.exports = function(app) {
+
+function csrfCheck(req, res, next) {
+    res.cookie('XSRF-TOKEN', req.csrfToken());
+    next();
+}
+
+module.exports = function (app) {
     // Root routing
     var console = require('../controllers/console');
 
-    // app.use('/console/*', csrf());
-    /*app.use(/console/*',function (req, res, next) {
-     res.cookie('XSRF-TOKEN', req.csrfToken());
-     next();
-     });*/
-
+    /*app.use('/auth/*', csrf());
+    app.use('/auth/*', function (req, res, next) {
+        console.log("GOT TOKEN:", req.csrfToken());
+        res.cookie('XSRF-TOKEN', req.csrfToken());
+        next();
+    }); */
 
 
     app.route('/')
@@ -46,24 +52,20 @@ module.exports = function(app) {
         .get(console.signout);
 
 
-
-
-
     // Change Password
     app.route('/users/password')
         .post(console.requiresLogin, console.changePassword);
-
-
 
 
     // All Admin Priv
     app.route('/users')
         .get(console.requiresLogin, console.requiresAdmin, console.list)
         .put(console.requiresLogin, console.requiresAdmin, console.update);
+
     app.route('/users/:uid')
         .get(console.requiresLogin, console.requiresAdmin, console.read)
         .delete(console.requiresLogin, console.requiresAdmin, console.deleteUser)
         .put(console.requiresLogin, console.requiresAdmin, console.update);
 
-    app.route('/users/create/volume').post(console.requiresLogin, console.requiresAdmin,console.createVolume);
+    app.route('/users/create/volume').post(console.requiresLogin, console.requiresAdmin, console.createVolume);
 };
