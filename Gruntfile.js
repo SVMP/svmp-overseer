@@ -47,6 +47,12 @@ module.exports = function (grunt) {
             shell = require('shelljs'),
             jwt = require('jsonwebtoken');
 
+        if (typeof username === 'undefined' || username == '') {
+            console.log('Error: no subject provided for token creation');
+            console.log('Usage: grunt create-admin-service-token:username');
+            return;
+        }
+
         svmp.init();
         var pass = svmp.config.get('private_key_pass');
         var file = svmp.config.get('private_key');
