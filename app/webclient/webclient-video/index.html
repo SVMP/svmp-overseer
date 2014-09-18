@@ -34,8 +34,11 @@
             console.log('SVMP state: "auth"');
 
             window.isMobile = ($("#touchcanvas").css("position") == "absolute");
-            // TODO: enable TLS option
-            var url = "ws://" + window.svmpData.server.host + ":" + window.svmpData.server.port;
+
+            var protocol = "ws";
+            if (window.location.protocol === "https:")
+                protocol = "wss";
+            var url = protocol + "://" + window.svmpData.server.host + ":" + window.svmpData.server.port;
             var ws = new WebSocket(url, window.svmpData.sessionInfo.token);
             ws.binaryType = "arraybuffer";
             var ProtoBuf = dcodeIO.ProtoBuf;
@@ -55,13 +58,22 @@
             };
 
             ws.onclose = function(ev) {
-                alert("Socket has been closed: " + ev.data);
-                console.log("socket close: " + ev.data);
+                var msg = "Socket has been closed, code: " + ev.code;
+
+                // no error messages are generated in "onerror", we have to guess...
+                if (ev.code === 1006 && protocol === "wss" && window.svmpState === "auth") {
+                    msg += "\n"
+                    + "(If you're using a self-signed certificate, navigate to '"
+                    + "http://" + window.svmpData.server.host + ":" + window.svmpData.server.port
+                    + "' in a new tab, accept the certificate, and try again)";
+                }
+
+                alert(msg);
+                console.log(msg);
             };
             
             ws.onerror = function(ev) {
-                alert("Socket encountered error: " + ev.data);
-                console.log("socket error: " + ev.data);
+                console.log("Socket encountered an error");
             };
 
             window.socket = ws;
