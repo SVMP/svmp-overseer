@@ -24,8 +24,8 @@ var
     assert = require('assert'),
     app = require('supertest')(svmp.config.get('enable_ssl') ? 'https://localhost:3000' : 'http://localhost:3000'),
     tokenHelper = require('../../lib/authentication').makeToken,
-    user_token = tokenHelper({username: 'dave', role: 'user'}),
-    admin_token = tokenHelper({username: 'bob', role: 'admin'});
+    user_token = tokenHelper({sub: 'dave', role: 'user'}),
+    admin_token = tokenHelper({sub: 'bob', role: 'admin'});
 
 describe("Services", function () {
 
