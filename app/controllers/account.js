@@ -40,10 +40,13 @@ var
  */
 exports.login = function(req,res) {
     // use loaded strategy for authentication
+    res.logUsername = req.body.username;
     strategy(req,function(errCode,result) {
         if(errCode) {
+            res.logMessage = 'Invalid login credentials';
             res.json(errCode,{msg: 'Error authenticating'});
         } else {
+            res.logMessage = 'Login successful';
             sendToken(res, result);
         }
     });
@@ -60,11 +63,14 @@ exports.changeUserPassword = function(req,res) {
     var oldPassword = req.body.password;
     var newPassword = req.body.newPassword;
 
+    res.logUsername = un;
     if (!un || !oldPassword || !newPassword) {
+        res.logMessage = 'Missing required fields';
         res.json(400, {msg: 'Missing required field(s)'});
     } else {
         svmp.User.findOne({username: un}, function (err, user) {
             if (err) {
+                res.logMessage = 'Internal error';
                 res.json(500, {msg: 'Internal error'});
             }
             else if (user && user.authenticate(oldPassword)) {
@@ -75,14 +81,17 @@ exports.changeUserPassword = function(req,res) {
                 user.save(function (err1, r) {
                     if (err1) {
                         // user model validation failed
+                        res.logMessage = 'Failed validation';
                         res.json(400, {msg: 'Failed validation'});
                     } else {
+                        res.logMessage = 'Password change successful';
                         sendToken(res, {'user': user});
                     }
                 });
             }
             else {
                 // failed authentication, reject
+                res.logMessage = 'Error authenticating';
                 res.json(401, {msg: 'Error authenticating'}); // UnAuth
             }
         });
