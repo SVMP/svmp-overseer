@@ -151,7 +151,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
                 $location.path('/settings/profile');
             }).error(function (response) {
                 $scope.error = "There was a problem! Make sure you entered all information " +
-                    "and your password is at least 6 characters long.";
+                    "and your password is at least 8 characters long.";
             });
         };
 

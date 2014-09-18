@@ -69,31 +69,36 @@ exports.listSupportedDevices = function(req,res) {
 exports.signup = function (req, res) {
     // For security measurement we remove the roles from the req.body object
     delete req.body.roles;
-    // Init Variables
-    var user = new svmp.User(req.body);
-    // Then save the user
-    user.save(function (err) {
-        if (err) {
-            return res.send(400, {
-                message: getErrorMessage(err)
-            });
-        } else {
-            // Remove sensitive data before login
-            user.password = undefined;
-            user.salt = undefined;
 
-            req.login(user, function (err) {
-                if (err) {
-                    res.send(400, err);
-                } else {
+    if(!req.body.device_type || req.body.device_type.length === 0) {
+        res.send(400);
+    } else {
+        // Init Variables
+        var user = new svmp.User(req.body);
+        // Then save the user
+        user.save(function (err) {
+            if (err) {
+                return res.send(400, {
+                    message: getErrorMessage(err)
+                });
+            } else {
+                // Remove sensitive data before login
+                user.password = undefined;
+                user.salt = undefined;
 
-                    //mail.sendToAdmin();
+                req.login(user, function (err) {
+                    if (err) {
+                        res.send(400, err);
+                    } else {
 
-                    res.jsonp(user);
-                }
-            });
-        }
-    });
+                        //mail.sendToAdmin();
+
+                        res.jsonp(user);
+                    }
+                });
+            }
+        });
+    }
 };
 
 /**

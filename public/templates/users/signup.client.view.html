@@ -17,8 +17,10 @@
 				</div>
                 <div class="form-group">
                     <select id="device" class="form-control  input-lg text-center"
-                            ng-model="credentials.device_type" ng-options="item.id as item.name for item in devices">
-                        <option value="">-- Select a supported device type --</option>
+                            ng-model="credentials.device_type" ng-options="device.id as device.name for device in devices">
+                        <option style="display:none" value="">Select a supported Device</option>
+                        <!--<option ng-repeat="item in devices" value="{{item.id}}">{{item.name}}</option>-->
+
                     </select>
 
                     <!--<select id="device" class="form-control text-center" data-ng-model="credentials.device_type">
