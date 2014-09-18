@@ -43,6 +43,7 @@ module.exports = function (app) {
 
     // Signup/Register
     app.route('/auth/signup')
+        .get(console.listSupportedDevices)
         .post(console.signup);
     // Signin
     app.route('/auth/signin')

@@ -138,7 +138,10 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
         //If user is signed in then redirect back home
         if ($scope.authentication.user) $location.path('/');
 
-        $scope.credentials = {device_type: 'Nexus 7'};
+        $http.get('/auth/signup').success(function (resp){
+            $scope.devices = resp;
+        });
+        //$scope.credentials = {device_type: 'Nexus 7'};
 
         $scope.signup = function () {
             $http.post('/auth/signup', $scope.credentials).success(function (response) {
@@ -147,7 +150,8 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
                 //And redirect to the index page
                 $location.path('/settings/profile');
             }).error(function (response) {
-                $scope.error = response.message;
+                $scope.error = "There was a problem! Make sure you entered all information " +
+                    "and your password is at least 6 characters long.";
             });
         };
 
@@ -164,7 +168,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
                 }
 
             }).error(function (response) {
-                $scope.error = response.message;
+                $scope.error = "There was a problem! Bad Username and/or Password";
             });
         };
     }

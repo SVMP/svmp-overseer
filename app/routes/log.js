@@ -30,42 +30,82 @@ var pubKey = null;
 // this route is called before any other middleware
 // it logs Request and Response information at various levels
 // logging happens right before the Response is sent to the client
+
+
+/**
+ * Daveb:  This now only logs requests that have tokens (which it seemed was the original intent).
+ * I reworked it below because it was only sending the
+ * status code and stripping all returned messages in the console app causing a bunch of things to break.
+ * @param app
+ */
 module.exports = function (app) {
     var logLevel = svmp.config.get('log_level');
 
     app.use(function (req, res, next) {
         // intercept the response before it gets sent
-        var send = res.send;
-        res.send = function (string) {
-            var token = req.get('svmp-authtoken');
-            // 'this' is the response
+        var token = req.get('svmp-authtoken');
+        if (token) {
+            var send = res.send;
+            res.send = function (string, m) {
+                var token = req.get('svmp-authtoken');
+                // 'this' is the response
 
-            if ((logLevel === 'debug' || logLevel === 'silly') && token) {
-                var that = this;
+                if (logLevel === 'debug' || logLevel === 'silly') {
+                    var that = this;
+                    var decoded = jwt.decode(token);
+                    // not every API call will contain a JWT; if it does (for admin APIs), pull the username out of it
+                    var reqUser = decoded.sub + "@";
+                    // debug: log the request address/method/URL and response status code
+                    svmp.logger.debug("Request (%s%s) %s '%s'; Response code: %d",
+                        reqUser, req.connection.remoteAddress, req.method, req.originalUrl, that.statusCode);
+                }
+                if (logLevel === 'silly') {
+                    // identify part of the JWT if the client presented one
+                    var reqJWT = JSON.stringify(decoded);
+                    var resJSON = JSON.parse(string);
+                    // silly: log the JWT/body and response body
+                    svmp.logger.silly("  Request JWT: '%s', JSON: %s; Response JSON: %s",
+                        reqJWT, JSON.stringify(req.body, stringifyFilter), JSON.stringify(resJSON, stringifyFilter));
+                }
+                // we're done logging, finish sending the response
+                send.call(this, string);
+            };
+        }
 
-                // The below fails on requests without tokens, such as console calls
-                //if (!token) {
-                //    token = ""; // prevents JWT verification error
-                //}
-                var decoded = jwt.decode(token);
-                // not every API call will contain a JWT; if it does (for admin APIs), pull the username out of it
-                var reqUser = decoded.sub + "@";
+        /*var send = res.send;
+         res.send = function (string, m) {
+         var token = req.get('svmp-authtoken');
+         // 'this' is the response
 
-                // debug: log the request address/method/URL and response status code
-                svmp.logger.debug("Request (%s%s) %s '%s'; Response code: %d",
-                    reqUser, req.connection.remoteAddress, req.method, req.originalUrl, that.statusCode);
-            }
-            if (logLevel === 'silly' && token) {
-                // identify part of the JWT if the client presented one
-                var reqJWT = JSON.stringify(decoded);
-                var resJSON = JSON.parse(string);
-                // silly: log the JWT/body and response body
-                svmp.logger.silly("  Request JWT: '%s', JSON: %s; Response JSON: %s",
-                    reqJWT, JSON.stringify(req.body, stringifyFilter), JSON.stringify(resJSON, stringifyFilter));
-            }
-            // we're done logging, finish sending the response
-            send.call(this, string);
-        };
+         if ((logLevel === 'debug' || logLevel === 'silly') && token) {
+         var that = this;
+
+         // The below fails on requests without tokens, such as console calls
+         //if (!token) {
+         //    token = ""; // prevents JWT verification error
+         //}
+         var decoded = jwt.decode(token);
+         // not every API call will contain a JWT; if it does (for admin APIs), pull the username out of it
+         var reqUser = decoded.sub + "@";
+
+         // debug: log the request address/method/URL and response status code
+         svmp.logger.debug("Request (%s%s) %s '%s'; Response code: %d",
+         reqUser, req.connection.remoteAddress, req.method, req.originalUrl, that.statusCode);
+         }
+         if (logLevel === 'silly' && token) {
+         // identify part of the JWT if the client presented one
+         var reqJWT = JSON.stringify(decoded);
+         var resJSON = JSON.parse(string);
+         // silly: log the JWT/body and response body
+         svmp.logger.silly("  Request JWT: '%s', JSON: %s; Response JSON: %s",
+         reqJWT, JSON.stringify(req.body, stringifyFilter), JSON.stringify(resJSON, stringifyFilter));
+         }
+         // we're done logging, finish sending the response
+
+         console.log("IN LOG: ", m);
+
+         send.call(this, string);
+         };*/
         // move on to the next middleware (token check, then requested route)
         next();
     });

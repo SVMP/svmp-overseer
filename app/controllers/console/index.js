@@ -57,6 +57,12 @@ exports.index = function (req, res) {
     });
 };
 
+
+exports.listSupportedDevices = function(req,res) {
+    var o = lodash.map(svmp.config.get("new_vm_defaults:images"), function(v,k) { return {name: k, id: v} });
+    res.jsonp(200,o);
+};
+
 /**
  * Signup
  */

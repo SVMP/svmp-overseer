@@ -7,22 +7,26 @@
 		<form data-ng-submit="signup()" class="signin form-horizontal" novalidate autocomplete="off">
 			<fieldset>
 				<div class="form-group">
-					<input type="text" id="email" name="email" class="form-control text-center" data-ng-model="credentials.email" placeholder="Email">
+					<input type="text" id="email" name="email" class="form-control input-lg text-center" data-ng-model="credentials.email" placeholder="Email">
 				</div>
 				<div class="form-group">
-					<input type="text" id="username" name="username" class="form-control text-center" data-ng-model="credentials.username" placeholder="Username">
+					<input type="text" id="username" name="username" class="form-control input-lg text-center" data-ng-model="credentials.username" placeholder="Username">
 				</div>
 				<div class="form-group">
-					<input type="password" id="password" name="password" class="form-control text-center" data-ng-model="credentials.password" placeholder="Password">
+					<input type="password" id="password" name="password" class="form-control input-lg text-center" data-ng-model="credentials.password" placeholder="Password">
 				</div>
                 <div class="form-group">
-                    <label for="device">Device Type:</label>
-                    <select id="device" class="form-control text-center" data-ng-model="credentials.device_type">
+                    <select id="device" class="form-control  input-lg text-center"
+                            ng-model="credentials.device_type" ng-options="item.id as item.name for item in devices">
+                        <option value="">-- Select a supported device type --</option>
+                    </select>
+
+                    <!--<select id="device" class="form-control text-center" data-ng-model="credentials.device_type">
                         <option ng-selected="credentials.device_type">Nexus 7</option>
                         <option>Samsung Galaxy Note II</option>
                         <option>HTC One</option>
                         <option>Motorola Atrix</option>
-                    </select>
+                    </select> -->
                 </div>
                 <br/>
 				<div class="text-center form-group">
