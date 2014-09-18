@@ -17,7 +17,7 @@
  *
  */
 
-'use strict'
+'use strict';
 
 var
     fs = require('fs'),
@@ -40,19 +40,22 @@ module.exports = function (app) {
             var token = req.get('svmp-authtoken');
             // 'this' is the response
 
-            if (logLevel === 'debug' || logLevel === 'silly') {
+            if ((logLevel === 'debug' || logLevel === 'silly') && token) {
                 var that = this;
-                if (!token)
-                    token = ""; // prevents JWT verification error
+
+                // The below fails on requests without tokens, such as console calls
+                //if (!token) {
+                //    token = ""; // prevents JWT verification error
+                //}
                 var decoded = jwt.decode(token);
                 // not every API call will contain a JWT; if it does (for admin APIs), pull the username out of it
-                var reqUser = reqUser = decoded.sub + "@";
+                var reqUser = decoded.sub + "@";
 
                 // debug: log the request address/method/URL and response status code
                 svmp.logger.debug("Request (%s%s) %s '%s'; Response code: %d",
                     reqUser, req.connection.remoteAddress, req.method, req.originalUrl, that.statusCode);
             }
-            if (logLevel === 'silly') {
+            if (logLevel === 'silly' && token) {
                 // identify part of the JWT if the client presented one
                 var reqJWT = JSON.stringify(decoded);
                 var resJSON = JSON.parse(string);
@@ -62,7 +65,7 @@ module.exports = function (app) {
             }
             // we're done logging, finish sending the response
             send.call(this, string);
-        }
+        };
         // move on to the next middleware (token check, then requested route)
         next();
     });
