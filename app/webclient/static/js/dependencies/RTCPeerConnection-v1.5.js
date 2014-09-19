@@ -132,11 +132,16 @@ function RTCPeerConnection(options) {
     function createOffer() {
         if (!options.onOfferSDP) return;
 
+	/* webrtc doesn't handle OPUS well for audio, remove it from the initial offer */
         peer.createOffer(function(sessionDescription) {
             sessionDescription.sdp = setBandwidth(sessionDescription.sdp);
+            // remove opus
+            var tmp1 = sessionDescription.sdp.replace("a=rtpmap:111 opus/48000/2\r\n","");
+            // remove fmtp line referring to OPUS
+            var tmp2 = tmp1.replace("a=fmtp:111 minptime=10\r\n","");
+            sessionDescription.sdp = tmp2;
             peer.setLocalDescription(sessionDescription);
             options.onOfferSDP(sessionDescription);
-
             console.debug('offer-sdp', sessionDescription.sdp);
         }, onSdpError, constraints);
     }
