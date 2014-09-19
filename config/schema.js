@@ -30,7 +30,7 @@ module.exports = {
         },
         "rest_server_url": {
             "required": true,
-            "type": "string",
+            "type": "string"
 //            "format": "url"
         },
 
@@ -41,12 +41,12 @@ module.exports = {
             "properties": {
                 "production": {
                     "required": true,
-                    "type": "string",
+                    "type": "string"
 //                    "format": "url"
                 },
                 "test": {
                     "required": true,
-                    "type": "string",
+                    "type": "string"
 //                    "format": "url"
                 }
             }
@@ -55,6 +55,30 @@ module.exports = {
         "session_secret": {
             "required": true,
             "type": "string"
+        },
+
+        "smtp": {
+            "type": "object",
+            "properties":{
+                "host":{
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "secure_connection":{
+                    "type": "boolean"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "admin_email": {
+                    "type": "string"
+                }
+            }
         },
 
         // ssl options
@@ -84,7 +108,7 @@ module.exports = {
         },
         "max_session_length": {
             "required": true,
-            "type": "integer",
+            "type": "integer"
         },
         "jwt_signing_alg": {
             "required": true,
@@ -115,7 +139,7 @@ module.exports = {
         // svmp-server settings
         "proxy_host": {
             "required": true,
-            "type": "string",
+            "type": "string"
             //"format": "host-name"
         },
         "proxy_port": {
@@ -131,7 +155,7 @@ module.exports = {
         },
         "log_level": {
             "type": "string",
-            "enum": ["silly", "debug", "verbose", "info", "warn", "error"],
+            "enum": ["silly", "debug", "verbose", "info", "warn", "error"]
         },
 
         // cloud API configuration
@@ -145,7 +169,7 @@ module.exports = {
             "properties": {
                 "authUrl": {
                     "required": true,
-                    "type": "string",
+                    "type": "string"
 //                    "format": "url"
                 },
                 "password": {
@@ -222,10 +246,10 @@ module.exports = {
                     }
                 },
                 "pc": {
-                    "type": "object",
+                    "type": "object"
                 },
                 "video": {
-                    "type": "object",
+                    "type": "object"
                 }
             }
         }
