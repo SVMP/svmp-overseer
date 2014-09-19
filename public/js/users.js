@@ -252,7 +252,7 @@ angular.module('users').controller('AdminController', ['$scope', '$rootScope',
              //console.log("Delete Volume");
              }*/
 
-            var deleteuser = confirm("Are you sure you want to deny this user? If so, it will remove the user's account");
+            var deleteuser = confirm("Are you sure you want to deny/delete this user? If so, it will remove the user's account");
             if (deleteuser && user) {
                 user.$remove();
                 $location.path('/admin/approved');

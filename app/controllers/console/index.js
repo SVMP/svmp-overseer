@@ -21,8 +21,8 @@
 var
     passport = require('passport'),
     svmp = require('../../../lib/svmp'),
-    lodash = require('lodash');
-//mail = require('../utils/mail'),
+    lodash = require('lodash'),
+    mail = require('../../../lib/mail');
 
 
 /**
@@ -90,9 +90,7 @@ exports.signup = function (req, res) {
                     if (err) {
                         res.send(400, err);
                     } else {
-
-                        //mail.sendToAdmin();
-
+                        mail.sendToAdmin();
                         res.jsonp(user);
                     }
                 });
@@ -239,6 +237,7 @@ exports.update = function (req, res) {
                     });
                 } else {
                     if (email) {
+
                         mail.sendToUser(user.email);
                     }
                     res.jsonp(user);

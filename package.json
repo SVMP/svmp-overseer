@@ -51,7 +51,8 @@
         "revalidator": "^0.2.0",
         "shelljs": "^0.3.0",
         "to-date": "latest",
-        "winston": "~0.7.3"
+        "winston": "~0.7.3",
+        "nodemailer": "~0.7.0"
     },
     "devDependencies": {
         "mocha": "latest",
