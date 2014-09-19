@@ -18,7 +18,19 @@ db:
 ################################################################################
 # WebConsole settings
 ################################################################################
+
+# Web session secret
 session_secret: "this should be something really long"
+
+# Email settings used to notify admin and users on account creation
+# IF the host field is left empty, email funcitonality will be ignored
+smtp:
+    host: ""
+    port: 465
+    secure_connection: true
+    username: ""
+    password: ""
+    admin_email: ""
 
 ################################################################################
 # SSL/TLS configuration
