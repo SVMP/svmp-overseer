@@ -11,7 +11,7 @@ ST                     = AZ
 L                      = Tucson
 O                      = Hello
 OU                     = Hello
-CN                     = localhost
+CN                     = dave
 emailAddress           = hello@here.org
 
 [ req_attributes ]
