@@ -19,6 +19,12 @@
                 <a href="/#!/signin"><i class="glyphicon glyphicon-log-in">&nbsp;Login</i></a>
             </li>
         </ul>
+        <!-- Link to webclient -->
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="/webclient"><i class="glyphicon glyphicon-hd-video">&nbsp;Webclient</i></a>
+            </li>
+        </ul>
         <!-- Admin links -->
         <ul class="nav navbar-nav" data-ng-show="authentication.user.roles[0] === 'admin'">
             <li ui-route="/admin/pending" ng-class="{active: $uiRoute}">

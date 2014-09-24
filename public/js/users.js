@@ -108,28 +108,31 @@ angular.module('users').factory('Users', ['$resource',
     }
 ]);
 
-angular.module('users').factory('Volume', ['$q', '$timeout', '$rootScope', '$http',
-    function ($q, $timeout, $rootScope, $http) {
+/*angular.module('users').factory('Volume', ['$scope', '$q', '$timeout', '$rootScope', '$http',
+    function ($scope, $q, $timeout, $rootScope, $http) {
         return function (user) {
-            /**
-             * Tell the backend to create a Volume for the user
-             * When we get a volumeid back, update the user's information
-             * which will then refresh the page
-             */
+
             $http({
                 url: '/users/create/volume',
                 method: "POST",
                 data: { 'uid': user._id }
-            }).then(function (response) {
+            }).then(
+                function (response) {
                     // success
                     user.volume_id = response.data.volid;
+                    $rootScope.$broadcast('volumeUpdate', user);
+                },
+                function(err) {
+                    // fail
+                    $scope.error = "Error creating the Volume. Check your cloud setting and the connection";
+                    user.volume_id = "";
                     $rootScope.$broadcast('volumeUpdate', user);
                 }
             );
 
         };
     }
-]);
+]);*/
 
 angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
     function ($scope, $http, $location, Authentication) {
@@ -198,8 +201,8 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 ]);
 
 angular.module('users').controller('AdminController', ['$scope', '$rootScope',
-    '$stateParams', '$http', '$location', 'Users', 'Authentication', 'Volume', 'ngTableParams',
-    function ($scope, $rootScope, $stateParams, $http, $location, Users, Authentication, Volume, ngTableParams) {
+    '$stateParams', '$http', '$location', 'Users', 'Authentication', 'ngTableParams',
+    function ($scope, $rootScope, $stateParams, $http, $location, Users, Authentication,  ngTableParams) {
 
         $scope.authentication = Authentication;
 
@@ -270,17 +273,33 @@ angular.module('users').controller('AdminController', ['$scope', '$rootScope',
         $scope.createVolume = function (user) {
             var makeVolume = confirm("Are you sure you want to create a Volume for this User?");
             if (user && makeVolume) {
-
                 /**
                  * Set the user's volume-id to 'pending' while we try to create it
                  * this set's the animated bar in the UI
                  */
                 user.volume_id = "pending";
                 user.$update(function () {
-                    new Volume(user);
+                    $http({
+                        url: '/users/create/volume',
+                        method: "POST",
+                        data: { 'uid': user._id }
+                    }).then(
+                        function (response) {
+                            // success
+                            user.volume_id = response.data.volid;
+                            $rootScope.$broadcast('volumeUpdate', user);
+                        },
+                        function(err) {
+                            // fail
+                            $scope.error = "Error creating the Volume. Check your cloud setting and the connection";
+                            user.volume_id = "";
+                            $rootScope.$broadcast('volumeUpdate', user);
+                        }
+                    );
                 }, function (err) {
-                    // TODO: handle the case where it fails so we can clear 'pending'
-                    $scope.error = err.data.message;
+                    $scope.error = "Error creating the Volume. Check your cloud setting and the connection";
+                    user.volume_id = "";
+                    $rootScope.$broadcast('volumeUpdate', user);
                 });
             }
         };

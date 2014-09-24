@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>SVMP Webclient</title>
+
+    <!-- General META -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- Fav Icon -->
+    <link href="/img/brand/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+    <!--Application CSS Files-->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/webclient.css">
+
+    <!-- HTML5 Shim -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<header class="navbar navbar-fixed-top navbar-inverse">
+    <div class="container" data-ng-controller="HeaderController">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Secure Virtual Mobile Platform</a>
+        </div>
+    </div>
+</header>
+<section class="content">
+    <section class="container">
+        <section class="row text-center">
+            <div class="col-md-12">
+                <h2>Webclient Login</h2>
+                <br/>
+            </div>
+            <div class="col-md-offset-4 col-md-4 col-md-4">
+                <p style="display: none; "class="alert alert-danger" id="error"></p>
+            </div>
+            <div class="col-md-offset-4 col-md-4 col-md-4">
+                <form id="loginform" class="signin form-horizontal" autocomplete="off">
+                    <fieldset>
+                        <div class="form-group">
+                            <input class="form-control input-lg text-center" type="text" id="username" name="username"
+                                   class="form-control" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control input-lg text-center" type="password" id="password"
+                                   name="password" class="form-control"
+                                   placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="remember" name="remember" type="checkbox"> Remember me
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-lg btn-success">LOGIN</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </section>
+    </section>
+</section>
+
+<!--Application JavaScript Files-->
+<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/js/webclient/deps/jquery.validate.min.js"></script>
+<script src="/js/webclient/deps/jquery.cookie.js"></script>
+<script src="/js/webclient/deps/date.js"></script>
+<script src="/js/webclient/utility.js"></script>
+<script>
+    // validate browser to make sure it's supported, and set identifying variable in window
+    checkBrowser();
+    var videoUrl = "/webclient/video",
+        loginUrl = "/login";
+
+    // look for session cookie, redirect if necessary
+    $.cookie.json = true; // turns on automatic JSON parsing for jquery.cookie
+    var data = $.cookie("svmpData");
+    if (data) {
+        alert("You have an active session, now sending you to the video page...");
+        window.location.replace(videoUrl);
+    }
+
+    // populate inputs if necessary
+    var remembered = $.cookie("svmpRemember");
+    if (remembered) {
+        // we found a cookie that told us to remember a username;
+        $("#username").val(remembered);
+        $("#remember").prop("checked", true);
+    }
+
+    $("#username").focus();
+
+    $("#loginform").submit(function(event) {
+        event.preventDefault();
+
+        var credentials = {
+            username: $("#username").val(),
+            password: $("#password").val()
+        };
+
+        // Basic validation
+        if(credentials.username && credentials.username.length > 0
+                && credentials.password && credentials.password.length > 0){
+            submitCredentials(credentials, loginUrl, videoUrl);
+        } else {
+            $("#error").html("Please enter username and password").show();
+            $("#username").focus();
+        }
+    });
+</script>
+
+</body>
+
+</html>

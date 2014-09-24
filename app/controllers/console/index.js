@@ -261,21 +261,32 @@ exports.deleteUser = function (req, res) {
     });
 };
 
+/**
+ * This creates a volume for a User AND updates the User's information
+ * with the new volume data.   The logic to update the User's info on successful
+ * volume creation is in the front-end logic - Why?  To handle the UI candy of volume
+ * creation.
+ *
+ *
+ * @param req
+ * @param res
+ */
 exports.createVolume = function (req, res) {
     var user_id = req.body.uid;
     svmp.User.findById(user_id, function (err, user) {
         if (err) {
+            res.logMessage = err;
             return res.send(400, {
                 message: getErrorMessage(err)
             });
         } else {
-            cloud.init();
-            cloud.createVolumeForUser(user)
+            svmp.cloud.createVolumeForUser(user)
                 .then(function (vol) {
                     // Send back info to browser to update UI
                     res.jsonp({user: user._id, volid: user.volume_id});
                 },
                 function (err) {
+                    res.logMessage = err;
                     return res.send(400, {
                         message: getErrorMessage(err)
                     });
