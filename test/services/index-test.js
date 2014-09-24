@@ -165,22 +165,6 @@ describe("Services", function () {
                     assert(typeof res.body === "object");
                 }).end(done);
         });
-        it("Should create a Volume", function(done) {
-            app.post('/services/cloud/volume/create')
-                .set('svmp-authtoken',admin_token)
-                .send({username: 'dave'})
-                .expect(function(res) {
-                    assert.equal(res.statusCode, 200);
-                    app.get('/services/cloud/volumes')
-                        .set('svmp-authtoken',admin_token)
-                        .expect(function(res) {
-                            assert.strictEqual(res.statusCode,200);
-                            console.log("Vols: ", res.body);
-                        });
-                }).end(done);
-
-
-        });
 
         // UNCOMMENT THESE TEST IF YOU HAVE A CLOUD CONFIGURED
         /*
