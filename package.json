@@ -16,7 +16,7 @@
     "private": true,
     "scripts": {
         "test": "grunt --config test/config.yaml",
-        "postinstall": "bower install --config.interactive=false"
+        "postinstall": "bower install --config.interactive=false --allow-root"
     },
     "bin": {
         "svmp-overseer": "./server.js",
