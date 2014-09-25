@@ -6,18 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 </head>
 <body>
-<div id="content">
+<div id="content" style="text-align:center; width:100%">
     <video id="rtcvidstream" class="hide" autoplay></video>
-    <canvas id="touchcanvas" class="hide"></canvas>
+    <canvas id="touchcanvas" class="hide" style="border:2px solid black"></canvas>
 </div>
+<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/js/webclient/deps/Long.min.js"></script>
 <script src="/js/webclient/deps/ByteBufferAB.min.js"></script>
 <script src="/js/webclient/deps/ProtoBuf.min.js"></script>
 <script src="/js/webclient/deps/RTCPeerConnection-v1.5.js"></script>
-<script src="/js/webclient/deps/jstz-1.0.4.min.js"></script>
+<script src="/js/webclient/deps/jstz.min.js"></script>
 <script src="/js/webclient/deps/jquery.cookie.js"></script>
 <script src="/js/webclient/handlers.js"></script>
-<script src="/js/webclient/deps/utility.js"></script>
+<script src="/js/webclient/utility.js"></script>
 <script>
     // validate browser to make sure it's supported, and set identifying variable in window
     checkBrowser();
@@ -41,7 +42,7 @@
     var ws = new WebSocket(url, window.svmpData.sessionInfo.token);
     ws.binaryType = "arraybuffer";
     var ProtoBuf = dcodeIO.ProtoBuf;
-    var builder = ProtoBuf.loadProtoFile("/static/data/svmp.proto");
+    var builder = ProtoBuf.loadProtoFile("/data/svmp.proto");
     var svmp = builder.build("svmp");
 
     ws.onopen = function() {

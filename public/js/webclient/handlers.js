@@ -89,13 +89,12 @@ function handleResponseConnected(resp, socket, pbuf) {
 }
 
 function sendInitRequests(socket, pbuf) {
-    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.SCREENINFO});
-    socket.send(sinfo.encodeDelimited().toArrayBuffer());
+    // send LOCATION requests
     providerinfo = new pbuf.LocationProviderInfo({
-        "provider" : "GPS_PROVIDER",
+        "provider" : "gps",
         "requiresNetwork" : true,
         "requiresSatellite" : true,
-        "requiresCell" : true,
+        "requiresCell" : false,
         "hasMonetaryCost" : false,
         "supportsAltitude" : true,
         "supportsSpeed" : true,
@@ -105,8 +104,27 @@ function sendInitRequests(socket, pbuf) {
     locReq = new pbuf.LocationRequest({"type" : pbuf.LocationRequest.LocationRequestType.PROVIDERINFO, "providerInfo" : providerinfo});
     locReqCont = new pbuf.Request({"type": pbuf.Request.RequestType.LOCATION, "locationRequest": locReq});
     socket.send(locReqCont.encodeDelimited().toArrayBuffer());
-    providerinfo.provider = "NETWORK_PROVIDER";
+    providerinfo.provider = "network";
+    providerinfo.requiresSatellite = false;
+    providerinfo.requiresCell = true;
     socket.send(locReqCont.encodeDelimited().toArrayBuffer());
+
+    // send TIMEZONE request
+    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.TIMEZONE, "timezoneId": jstz.determine().name()});
+    socket.send(sinfo.encodeDelimited().toArrayBuffer());
+
+    // send SCREENINFO request
+    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.SCREENINFO});
+    socket.send(sinfo.encodeDelimited().toArrayBuffer());
+
+    // send CONFIG request
+//    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.CONFIG, "config": {"hardKeyboard": true}});
+//    socket.send(sinfo.encodeDelimited().toArrayBuffer());
+
+    // send APPS request
+    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.APPS, "apps": {"type": pbuf.AppsRequest.AppsRequestType.LAUNCH}});
+    socket.send(sinfo.encodeDelimited().toArrayBuffer());
+
     window.currtouches = [];
 }
 
