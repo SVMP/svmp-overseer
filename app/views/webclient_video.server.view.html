@@ -140,6 +140,7 @@
     canvas.addEventListener("mousedown", function(ev) { handleMouseStart(ev, ws, svmp) }, false);
     canvas.addEventListener("mouseup", function(ev) { handleMouseEnd(ev, ws, svmp) }, false);
     canvas.addEventListener("mousemove", function(ev) { handleMouseMove(ev, ws, svmp) }, false);
+    canvas.addEventListener("mouseout", function(ev) { handleMouseEnd(ev, ws, svmp) }, false);
 
     // set up Android button listeners
     $("#backButton").click(function() {
