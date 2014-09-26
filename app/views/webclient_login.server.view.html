@@ -91,7 +91,6 @@
     $.cookie.json = true; // turns on automatic JSON parsing for jquery.cookie
     var data = $.cookie("svmpData");
     if (data) {
-        alert("You have an active session, now sending you to the video page...");
         window.location.replace(videoUrl);
     }
 

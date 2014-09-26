@@ -69,8 +69,8 @@ function handleResponseConnected(resp, socket, pbuf) {
         case pbuf.Response.ResponseType.AUTH:
             // we received an AUTH_FAIL
             alert("Auth failed! Please re-enter your credentials.");
-            $.removeCookie("svmpData");
-            window.location.replace("/webclient-login");
+            $.removeCookie("svmpData", {path: '/'});
+            window.location.replace("/webclient");
             break;
         case pbuf.Response.ResponseType.VMREADY:
             console.log("Received VMREADY");

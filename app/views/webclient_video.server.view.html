@@ -9,6 +9,9 @@
 <div id="content" style="text-align:center; width:100%">
     <video id="rtcvidstream" class="hide" autoplay></video>
     <canvas id="touchcanvas" class="hide" style="border:2px solid black"></canvas>
+    <p>
+        <button class="confirm" id="logout" type="button">Log Out</button>
+    </p>
 </div>
 <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/js/webclient/deps/Long.min.js"></script>
@@ -32,6 +35,15 @@
     }
     window.svmpState = "auth"; // state 1: authenticated
     console.log('SVMP state: "auth"');
+
+    // logout button
+    $("#logout").click(function() {
+        var result = confirm("Are you sure you want to log out and close your connection?");
+        if (result) {
+            $.removeCookie("svmpData", {path: '/'});
+            window.location.replace("/webclient");
+        }
+    });
 
     window.isMobile = ($("#touchcanvas").css("position") == "absolute");
 
