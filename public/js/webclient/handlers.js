@@ -48,6 +48,7 @@ function repeatUpdateLocation(pbuf, provider, timeout) {
 
 function handleResponse(resp, socket, pbuf) {
     if (resp.type === pbuf.Response.ResponseType.ERROR) {
+        window.svmpState = "error";
         alert("Error received!");
         return;
     }
@@ -288,8 +289,9 @@ function handleTouch(ev, socket, pbuf, touchtype) {
             scaledY = window.currtouches[i].pageY * window.ysf;
         }
         else {
-            scaledX = window.currtouches[i].pageX - canvas.offsetLeft;
-            scaledY = window.currtouches[i].pageY - canvas.offsetTop;
+            var rect = canvas.getBoundingClientRect();
+            scaledX = window.currtouches[i].pageX - rect.left;
+            scaledY = window.currtouches[i].pageY - rect.top;
         }
         var msg = new pbuf.TouchEvent.PointerCoords({"id" : window.currtouches[i].identifier, "x" : scaledX, "y" : scaledY});
         touchmsgs.push(msg);

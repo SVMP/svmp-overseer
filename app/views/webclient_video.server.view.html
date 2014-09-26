@@ -2,16 +2,35 @@
 <html>
 <head>
     <title>SVMP HTML5 Client</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="/css/webclient.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 </head>
 <body>
-<div id="content" style="text-align:center; width:100%">
-    <video id="rtcvidstream" class="hide" autoplay></video>
-    <canvas id="touchcanvas" class="hide" style="border:2px solid black"></canvas>
-    <p>
-        <button class="confirm" id="logout" type="button">Log Out</button>
-    </p>
+<div id="content">
+    <table style="margin-left:auto; margin-right:auto; text-align:center">
+        <tr><td>
+            <video id="rtcvidstream" class="hide" autoplay></video>
+            <canvas id="touchcanvas" class="hide" style="border:2px solid black"></canvas>
+        </td></tr>
+        <tr><td>
+            <div class="btn-group btn-group-justified btn-group-lg" style="table-layout:auto">
+                <a href="#" id="backButton" class="btn btn-default" style="width:33.3%" title="Back">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a href="#" id="homeButton" class="btn btn-default" style="width:33.3%" title="Home">
+                    <span class="glyphicon glyphicon-home"></span>
+                </a>
+                <a href="#" id="appSwitchButton" class="btn btn-default" style="width:33.3%" title="App Switch">
+                    <span class="glyphicon glyphicon-tasks"></span>
+                </a>
+            </div>
+        </td></tr>
+        <tr><td>
+            <br />
+            <button id="logoutButton" type="button" class="btn btn-lg btn-danger">Log Out</button>
+        </td></tr>
+    </table>
 </div>
 <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/js/webclient/deps/Long.min.js"></script>
@@ -37,7 +56,7 @@
     console.log('SVMP state: "auth"');
 
     // logout button
-    $("#logout").click(function() {
+    $("#logoutButton").click(function() {
         var result = confirm("Are you sure you want to log out and close your connection?");
         if (result) {
             $.removeCookie("svmpData", {path: '/'});
@@ -121,6 +140,49 @@
     canvas.addEventListener("mousedown", function(ev) { handleMouseStart(ev, ws, svmp) }, false);
     canvas.addEventListener("mouseup", function(ev) { handleMouseEnd(ev, ws, svmp) }, false);
     canvas.addEventListener("mousemove", function(ev) { handleMouseMove(ev, ws, svmp) }, false);
+
+    // set up Android button listeners
+    $("#backButton").click(function() {
+        androidButton(4);
+    });
+    $("#homeButton").click(function() {
+        androidButton(3);
+    });
+    $("#appSwitchButton").click(function() {
+        androidButton(187);
+    });
+    function androidButton(buttonCode) {
+        if (window.svmpState !== "running")
+            return;
+        var buttonRequest = new svmp.Request({
+            type: svmp.Request.RequestType.KEYEVENT,
+            key: {
+                eventTime: {
+                    low: 0,
+                    high: 0,
+                    unsigned: false
+                },
+                deviceId: 2,
+                flags: 72,
+                downTime: {
+                    low: 0,
+                    high: 0,
+                    unsigned: false
+                },
+                action: 0,
+                code: buttonCode,
+                repeat: 0,
+                metaState: 0,
+                scanCode: 158,
+                source: 257
+            }
+        });
+        // send button down
+        window.socket.send(buttonRequest.encodeDelimited().toArrayBuffer());
+        // send button up
+        buttonRequest.key.action = 1;
+        window.socket.send(buttonRequest.encodeDelimited().toArrayBuffer());
+    }
 </script>
 
 </body>
