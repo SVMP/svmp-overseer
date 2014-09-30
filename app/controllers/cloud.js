@@ -37,9 +37,9 @@ exports.setUpVm = function (req, res) {
                     res.json(404, {msg: "User not found"});
                 }
                 // before we proceed, validate some user properties first
-                else if (svmp.config.get('new_vm_defaults:images')[userObj.device_type] === undefined)
+                else if (!userObj.vm_ip && svmp.config.get('new_vm_defaults:images')[userObj.device_type] === undefined)
                     throw new Error("User '" + userObj.username + "' has an unknown device type '" + userObj.device_type + "'");
-                else if (userObj.volume_id === '')
+                else if (!userObj.vm_ip && userObj.volume_id === '')
                     throw new Error("User '" + userObj.username + "' does not have a Volume ID");
                 else {
                     return svmp.cloud.setUpUser(userObj)
