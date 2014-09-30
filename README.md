@@ -2,6 +2,7 @@
 # SVMP Overseer
 
 Serves as a central controller, login, and RESTful API server for SVMP.
+Includes a web console and an HTML5 web client.
 
 [![Build Status](https://travis-ci.org/SVMP/svmp-overseer.svg?branch=master)](https://travis-ci.org/SVMP/svmp-overseer)
 
@@ -15,11 +16,13 @@ Serves as a central controller, login, and RESTful API server for SVMP.
 ### Install Steps
 
 1. Download this project
-2. Within the root directory of this project, run this command to install the project and download dependencies:
+2. Within the root directory of this project, run these commands to install the project and download dependencies:
 
-```sh
-$ npm install
-```
+ ```sh
+ $ sudo npm install -g grunt-cli
+ $ sudo npm install -g bower
+ $ npm install
+ ```
 
 ## Quick Start
 
@@ -35,6 +38,16 @@ $ node server.js
 
 Now, press **Ctrl+C** to close the server. Open the newly-generated `./config/config-local.js` file and set your private settings here. Choose which cloud environment you will use and set the appropriate cloud configuration accordingly.
 
+To set up TLS encryption with self-signed certificates:
+
+1. Modify the `./tls/*.cnf` files to match your SVMP Overseer and SVMP Server information. **Important: change the passwords from the defaults!**
+2. Modify the `./tls/Makefile`, change the `SERVER_PASSPHRASE` and `OVERSEER_PASSPHRASE` values to match your new passwords.
+3. Generate the self-signed certificates:
+
+    ```sh
+    $ make -C ./tls/
+    ```
+
 Run tests to make sure they pass:
 ```sh
 $ grunt
@@ -45,13 +58,18 @@ Finally, start the server:
 $ node server.js
 ```
 
+Using a web browser, navigate to the root URL to access the web console (e.g. *https://your-hostname:3000*)
+
 ## API
 
 All requests with a URL prefix of `/api` and `/services` **must** contain a JSON Web Token (JWT) in the request header, in the form:
 `svmp-authtoken : 'sometoken'`
 
 Requests to URLs with a `/services` prefix *must* have the role `admin` in the JWT.
-You can use Grunt to generate a services token. See `grunt create-service-token` for more details.
+You can use Grunt to generate a services token. For more details, run the following command:
+```sh
+$ node create-token.js
+```
 
 ### User Clients
 #### Login
@@ -60,8 +78,7 @@ POST `/login`
 
 **Request**
 ```javascript
-{
-  username: 'un',
+{ username: 'un',
   password: 'pw'
 }
 ```
@@ -69,31 +86,28 @@ POST `/login`
 **Response**
 
 * *200* OK - Body:
-```javascript
-  {
-    sessionInfo: {
-      token: 'token',
-      maxLength: 36000
-    },
-    server: {
-      host: 'svmp-server.example.com'
-      port: 8002
-    },
+    ```javascript
+    { sessionInfo: {
+        token: 'token',
+        maxLength: 36000
+      },
+      server: {
+        host: 'svmp-server.example.com'
+        port: 8002
+      },
+      webrtc: {...}
+    }
+    ```
 
-    webrtc: {}
-  }
-```
-Token is a JWT that can be used to authenticate with an SVMP proxy server, with a payload that includes:
-```javascript
-  {
-    'sub': 'user._id',
-    'username': 'username',
-    'role': 'user|admin',
-    'iss': 'https://restserver.com',
-    'exp': 'expiration time',
-    'jti': 'username-uuid'
-  }
-```
+ Token is a JWT that can be used to authenticate with an SVMP proxy server, with a payload that includes:
+    ```javascript
+    { sub: 'user._id',
+      role: 'user|admin',
+      exp: 'expiration time',
+      jti: 'username-uuid'
+    }
+    ```
+
 * *400* Bad Request - Missing required field(s)
 * *401* Unauthorized - Bad username/password combination
 * *403* Forbidden - The user needs to change their password before proceeding
@@ -105,8 +119,7 @@ POST `/changePassword`
 
 **Request**
 ```javascript
-{
-  password: 'hello',
+{ password: 'hello',
   newPassword: 'thisismynewsecurepassword'
 }
 ```
@@ -128,16 +141,7 @@ You can use Grunt to generate a services token. See `grunt create-service-token`
 GET `/services/users`
 
 **Response**
-* *200* OK - Body (list of users):
-```javascript
-  {
-    users: [
-      {},
-      {},
-      ...
-    ]
-  }
-```
+* *200* OK - Body: `{ users: [{...}, {...}, ...] }`
 * *401* Unauthorized - Bad token or insufficient permissions
 * *500* Internal Server Error - Unable to complete request
 
@@ -147,12 +151,11 @@ POST `/services/user`
 
 **Request**
 ```javascript
-{
-  user: {
-    username: '',
-    password: '',
-    email: '',
-    device_type: ''
+{ user: {
+    username: 'un',
+    password: 'pw',
+    email: 'new@here.com',
+    device_type: 'device_1'
   }
 }
 ```
@@ -184,9 +187,8 @@ where `:username` is the actual user's name
 
 **Request**
 ```javascript
-{ 
-  username: 'username of person to update'
-  // Fields to update
+{ username: 'un',
+  // Field(s) to update
   update: {'email': 'new@here.com'}
 }
 ```
@@ -205,12 +207,7 @@ GET `/services/user/:username`
 where `:username` is the actual user's name
 
 **Response**
-* *200* OK - Body:
-```javascript
-  {
-    user: {}
-  }
-```
+* *200* OK - Body: `{ user: {...} }`
 * *400* Bad Request - Missing required field(s)
 * *401* Unauthorized - Bad token or insufficient permissions
 * *404* Not Found - User does not exist
@@ -223,9 +220,8 @@ POST `services/vm-session`
 
 **Request**
 ```javascript
-{
-  username: 'un',
-  expireAt: datetime
+{ username: 'un',
+  expireAt: Date
 }
 ```
 
@@ -241,9 +237,8 @@ PUT `services/vm-session`
 
 **Request**
 ```javascript
-{
-  username: 'un',
-  lastAction: datetime
+{ username: 'un',
+  lastAction: Date
 }
 ```
 
@@ -263,41 +258,84 @@ GET `/services/cloud/setupVm/:username`
 where `:username` is the actual user's name
 
 **Response**
-* *200* OK, body:
-```javascript
-  {
-    vm_ip: 'ip address',
-    vm_port: 'port number of vm'
-  }
-```
+* *200* OK - Body: `{ vm_ip: 'ip address', vm_port: 'port number of vm' }`
+* *400* Bad Request - Missing required field(s)
+* *401* Unauthorized - Bad token or insufficient permissions
+* *500* Internal Server Error - Unable to complete request
 
 #### List Device Types
 
 GET `/services/cloud/devices`
 
+**Response**
+* *200* OK - Body: `{ device_1: 'imageID', device_2: 'imageID', ... }`
+* *401* Unauthorized - Bad token or insufficient permissions
+* *500* Internal Server Error - Unable to complete request
+
 #### List Volumes
 
 GET `/services/cloud/volumes`
 
+**Response**
+* *200* OK - Body: `{ volumes: [...] }`
+* *401* Unauthorized - Bad token or insufficient permissions
+* *500* Internal Server Error - Unable to complete request
+
 #### Create Volume for User
 
-POST `/services/cloud/volume`
+POST `/services/cloud/volume/create`
+
+**Request**
+```javascript
+{ username: 'un' }
+```
+
+**Response**
+* *200* OK - Empty body
+* *400* Bad Request - Missing required field(s)
+* *401* Unauthorized - Bad token or insufficient permissions
+* *404* Not Found - User does not exist
+* *500* Internal Server Error - Unable to complete request
 
 #### Assign Volume to User
 
 POST `/services/cloud/assignVolume`
 
+**Request**
+```javascript
+{ username: 'un',
+  volid: 'volume ID'
+}
+```
+
+**Response**
+* *200* OK - Empty body
+* *400* Bad Request - Missing required field(s)
+* *401* Unauthorized - Bad token or insufficient permissions
+* *404* Not Found - User does not exist
+* *500* Internal Server Error - Unable to complete request
+
 #### Create/Start VM for User
 
-POST `/services/cloud/startVM`
+GET `/services/cloud/setupVm/:username`
 
-#### Register VM to User
+where `:username` is the actual user's name
 
-POST `/services/cloud/assignVm`
+**Response**
+* *200* OK - Empty body
+* *400* Bad Request - Missing required field(s)
+* *401* Unauthorized - Bad token or insufficient permissions
+* *404* Not Found - User does not exist
+* *500* Internal Server Error - Unable to complete request
 
 #### List Images and Flavors
 
 GET `/services/cloud/images`
+
+**Response**
+* *200* OK - Body: `{ flavors: [...], images: [...] }`
+* *401* Unauthorized - Bad token or insufficient permissions
+* *500* Internal Server Error - Unable to complete request
 
 ## License
 Copyright (c) 2012-2014, The MITRE Corporation, All Rights Reserved.
