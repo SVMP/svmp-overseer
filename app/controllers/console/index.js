@@ -58,9 +58,11 @@ exports.index = function (req, res) {
 };
 
 
-exports.listSupportedDevices = function(req,res) {
-    var o = lodash.map(svmp.config.get("new_vm_defaults:images"), function(v,k) { return {name: k, id: v} });
-    res.jsonp(200,o);
+exports.listSupportedDevices = function (req, res) {
+    var o = lodash.map(svmp.config.get("new_vm_defaults:images"), function (v, k) {
+        return {name: k, id: v}
+    });
+    res.jsonp(200, o);
 };
 
 /**
@@ -70,7 +72,7 @@ exports.signup = function (req, res) {
     // For security measurement we remove the roles from the req.body object
     delete req.body.roles;
 
-    if(!req.body.device_type || req.body.device_type.length === 0) {
+    if (!req.body.device_type || req.body.device_type.length === 0) {
         res.send(400);
     } else {
         // Init Variables
@@ -294,6 +296,67 @@ exports.createVolume = function (req, res) {
         }
     });
 };
+
+// Only tested with AWS.  Format from AWS is:
+// [{name:'', status: '', id: ''}
+exports.listVolumes = function (req, res) {
+    var results = [];
+    svmp.cloud.getVolumes(function (err, r) {
+        if (err) {
+            svmp.logger.error("listVolumes failed:", err);
+            res.json(500, {msg: "Problem listing volumes"});
+        } else {
+            res.json(200, r);
+        }
+    });
+};
+
+// Only tested with AWS.  Returned images format from AWS is:
+// [{name:'', _id: ''}
+exports.listImagesDevices = function (req, res) {
+    var result = {images: [], devices: []};
+    svmp.cloud.getImages(function (err, r) {
+        if (err) {
+            svmp.logger.error("listImages failed to get images:", err);
+            res.json(500, {msg: "Error listing Cloud Images"});
+        } else {
+            var o = lodash.map(svmp.config.get("new_vm_defaults:images"), function (v, k) {
+                    return {name: k, id: v}
+            });
+            result.images = r;
+            result.devices= o;
+            res.json(200, result);
+        }
+    });
+};
+
+
+// Post with Username.  Creates VM. Should update UI with VM ID and IP
+/*exports.startVM = function(req,res) {
+    if(un) {
+        svmp.User.findUserWithPromise({username: un})
+            .then(function (userObj) {
+                // before we proceed, validate some user properties first
+                if (svmp.config.get('new_vm_defaults:images')[userObj.device_type] === undefined)
+                    throw new Error("User '" + userObj.username + "' has an unknown device type '" + userObj.device_type + "'");
+                else if (userObj.volume_id === '')
+                    throw new Error("User '" + userObj.username + "' does not have a Volume ID");
+                return userObj;
+            }).then(svmp.cloud.setUpUser)
+            .then(function (userObj) {
+                //userObj.vm_port = svmp.config.get('vm_port');
+                // for some reason, setting a property on userObj doesn't stick - make a new object instead
+                var obj = {
+                    'vm_ip': userObj.vm_ip,
+                    'vm_port': svmp.config.get('vm_port')
+                };
+                res.json(200, obj);
+            }).catch(function (err) {
+                svmp.logger.error("setUpVm failed:", err);
+                res.send(500);
+            }).done();
+    }
+}; */
 
 
 /**

@@ -18,25 +18,9 @@
  */
 'use strict';
 
-var csrf = require('csurf');
-
-
-function csrfCheck(req, res, next) {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    next();
-}
-
 module.exports = function (app) {
     // Root routing
     var console = require('../controllers/console');
-
-    /*app.use('/auth/*', csrf());
-    app.use('/auth/*', function (req, res, next) {
-        console.log("GOT TOKEN:", req.csrfToken());
-        res.cookie('XSRF-TOKEN', req.csrfToken());
-        next();
-    }); */
-
 
     app.route('/')
         .get(console.index);
@@ -69,4 +53,13 @@ module.exports = function (app) {
         .put(console.requiresLogin, console.requiresAdmin, console.update);
 
     app.route('/users/create/volume').post(console.requiresLogin, console.requiresAdmin, console.createVolume);
+
+    app.route('/cloud/volumes')
+        .get(console.requiresLogin, console.requiresAdmin, console.listVolumes);
+
+    app.route('/cloud/images')
+        .get(console.requiresLogin, console.requiresAdmin, console.listImagesDevices);
+
+    //app.route('/cloud/startVm')
+    //    .post()
 };

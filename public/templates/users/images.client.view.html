@@ -1,0 +1,45 @@
+<section data-ng-controller="AdminController" data-ng-init="listImages()">
+    <div class="row">
+        <div class="title-header col-md-12">
+            <i class="glyphicon glyphicon-tasks"></i>&nbsp;Images/Devices
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Images</div>
+                <div class="panel-body">
+                    <table class='table table-hover'>
+                        <thead>
+                        <th>Name</th>
+                        <th>ID</th>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="image in images">
+                            <td>{{image.name}}</td>
+                            <td>{{image._id}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Supported Devices</div>
+                <div class="panel-body">
+                    <table class='table table-hover'>
+                        <thead>
+                        <th>Name</th>
+                        <th>ID</th>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="device in devices">
+                            <td>{{device.name}}</td>
+                            <td>{{device.id}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

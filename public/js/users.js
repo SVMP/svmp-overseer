@@ -84,6 +84,10 @@ angular.module('users').config(['$stateProvider',
             state('uservolumes', {
                 url: '/admin/volumes',
                 templateUrl: '/templates/users/volumes.client.view.html'
+            }).
+            state('images', {
+                url: '/admin/images',
+                templateUrl: '/templates/users/images.client.view.html'
             });
     }
 ]);
@@ -108,32 +112,6 @@ angular.module('users').factory('Users', ['$resource',
     }
 ]);
 
-/*angular.module('users').factory('Volume', ['$scope', '$q', '$timeout', '$rootScope', '$http',
-    function ($scope, $q, $timeout, $rootScope, $http) {
-        return function (user) {
-
-            $http({
-                url: '/users/create/volume',
-                method: "POST",
-                data: { 'uid': user._id }
-            }).then(
-                function (response) {
-                    // success
-                    user.volume_id = response.data.volid;
-                    $rootScope.$broadcast('volumeUpdate', user);
-                },
-                function(err) {
-                    // fail
-                    $scope.error = "Error creating the Volume. Check your cloud setting and the connection";
-                    user.volume_id = "";
-                    $rootScope.$broadcast('volumeUpdate', user);
-                }
-            );
-
-        };
-    }
-]);*/
-
 angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
     function ($scope, $http, $location, Authentication) {
         $scope.authentication = Authentication;
@@ -141,7 +119,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
         //If user is signed in then redirect back home
         if ($scope.authentication.user) $location.path('/');
 
-        $http.get('/auth/signup').success(function (resp){
+        $http.get('/auth/signup').success(function (resp) {
             $scope.devices = resp;
         });
         //$scope.credentials = {device_type: 'Nexus 7'};
@@ -202,7 +180,7 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 
 angular.module('users').controller('AdminController', ['$scope', '$rootScope',
     '$stateParams', '$http', '$location', 'Users', 'Authentication', 'ngTableParams',
-    function ($scope, $rootScope, $stateParams, $http, $location, Users, Authentication,  ngTableParams) {
+    function ($scope, $rootScope, $stateParams, $http, $location, Users, Authentication, ngTableParams) {
 
         $scope.authentication = Authentication;
 
@@ -270,6 +248,31 @@ angular.module('users').controller('AdminController', ['$scope', '$rootScope',
             });
         };
 
+        $scope.clearVMInfo = function (user) {
+            user.vm_id = "";
+            user.vm_ip = "";
+            user.$update();
+        };
+
+        $scope.listVolumes = function () {
+            $http.get('/cloud/volumes').success(function (resp) {
+                $scope.error = "";
+                $scope.volumes = resp;
+            }).error(function () {
+                $scope.error = "Problem listing volumes";
+            });
+        };
+
+        $scope.listImages = function () {
+            $http.get('/cloud/images').success(function (resp) {
+                $scope.error = "";
+                $scope.images = resp.images;
+                $scope.devices = resp.devices;
+            }).error(function () {
+                $scope.error = "Problem listing Images";
+            });
+        };
+
         $scope.createVolume = function (user) {
             var makeVolume = confirm("Are you sure you want to create a Volume for this User?");
             if (user && makeVolume) {
@@ -289,7 +292,7 @@ angular.module('users').controller('AdminController', ['$scope', '$rootScope',
                             user.volume_id = response.data.volid;
                             $rootScope.$broadcast('volumeUpdate', user);
                         },
-                        function(err) {
+                        function (err) {
                             // fail
                             $scope.error = "Error creating the Volume. Check your cloud setting and the connection";
                             user.volume_id = "";

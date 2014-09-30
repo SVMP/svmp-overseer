@@ -1,5 +1,26 @@
-<section class="row">
-    <div class="text-center">
-        <h2>Place holder for Openstack stuff</h2>
+<section data-ng-controller="AdminController" data-ng-init="listVolumes()">
+    <div class="row">
+        <div class="title-header col-md-12">
+            <i class="glyphicon glyphicon-hdd"></i>&nbsp;Volumes
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div data-ng-show="error" class="text-center text-danger">
+            <strong>{{error}}</strong>
+        </div>
+        <table class='table table-hover'>
+            <thead>
+            <th>Name</th>
+            <th>Status</th>
+            <th>ID</th>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="vol in volumes">
+                <td>{{vol.name}}</td>
+                <td>{{vol.status}}</td>
+                <td>{{vol.id}}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </section>

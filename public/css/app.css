@@ -68,6 +68,10 @@ label {
     position: absolute;
 }
 
+.btn:focus {
+    outline: none;
+}
+
 .error-box {
     padding-top: 60px;
     color: red;

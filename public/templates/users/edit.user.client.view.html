@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-offset-3 col-md-6 col-md-offset-3">
             <div class="panel panel-default">
-                <div class="panel-heading">Change User's role</div>
+                <div class="panel-heading">User Profile</div>
                 <div class="panel-body">
                     <form class="form-horizontal" novalidate>
                         <div class="form-group">
@@ -45,8 +45,8 @@
 
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-md-10">
-                                <button type="button" data-ng-click="updateRole(user)" class="btn btn-default btn-md">
-                                    Update Role
+                                <button type="button" data-ng-click="updateRole(user)" class="btn btn-warning btn-md">
+                                    Change Role
                                 </button>
                             </div>
                         </div>
@@ -61,8 +61,62 @@
 
     <div class="row">
         <div class="col-md-offset-3 col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Volume Information</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" novalidate>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Volume Id:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.volume_id || "No Volume. See \'Approved\' listing"}}</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">VM Information</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" novalidate>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">VM ID:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.vm_id || 'No VM attached to User'}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">VM IP:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{user.vm_ip || 'No VM IP attached to User'}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-10">
+                                <button type="button" data-ng-click="clearVMInfo(user)" class="btn btn-warning btn-md">
+                                    Clear VM Information
+                                </button>
+                                &nbsp;
+                                <button type="button" data-ng-click="" class="btn btn-success btn-md">
+                                   Start VM
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-md-offset-3">
             <div class="panel panel-danger">
-                <div class="panel-heading">Delete the User</div>
+                <div class="panel-heading">Delete User</div>
                 <div class="panel-body">
                     <form class="form-horizontal" novalidate>
                         <div data-ng-show="user.volume_id.length > 0" class="form-group">
@@ -82,8 +136,8 @@
 
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-md-10">
-                                <button type="button" data-ng-click="deleteUser(user)" class="btn btn-danger btn-md">
-                                    Delete User
+                                <button type="button" data-ng-click="deleteUser(user)" class="btn btn-danger btn-lg">
+                                    Delete the User
                                 </button>
                             </div>
                         </div>
