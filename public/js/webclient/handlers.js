@@ -119,8 +119,8 @@ function sendInitRequests(socket, pbuf) {
     socket.send(sinfo.encodeDelimited().toArrayBuffer());
 
     // send CONFIG request
-//    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.CONFIG, "config": {"hardKeyboard": true}});
-//    socket.send(sinfo.encodeDelimited().toArrayBuffer());
+    sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.CONFIG, "config": {"hardKeyboard": false}});
+    socket.send(sinfo.encodeDelimited().toArrayBuffer());
 
     // send APPS request
     sinfo = new pbuf.Request({"type" : pbuf.Request.RequestType.APPS, "apps": {"type": pbuf.AppsRequest.AppsRequestType.LAUNCH}});
