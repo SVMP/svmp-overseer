@@ -75,9 +75,9 @@ exports.addUser = function (req, res) {
             volume_id: ''
         }).save(function (err,u,num) {
             if (err) {
-                res.send(500, {msg: 'Error adding user: ' + err.message});
+                res.json(500, {msg: 'Error adding user: ' + err.message});
             } else {
-                res.send(200, {id: u.id});
+                res.json(200, {id: u.id});
             }
         });
     }
@@ -96,7 +96,7 @@ exports.deleteUser = function (req, res) {
                 res.json(404, {msg: 'User not found'});
             } else {
                 user.remove();
-                res.send(200);
+                res.json(200, {});
             }
         });
     }
@@ -115,7 +115,7 @@ exports.updateUser = function (req, res) {
             } else if (numberAffected === 0) {
                 res.json(404, {msg: 'User not found'});
             } else {
-                res.send(200);
+                res.json(200, {});
             }
         });
     }

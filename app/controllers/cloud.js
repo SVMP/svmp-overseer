@@ -32,24 +32,30 @@ exports.setUpVm = function (req, res) {
     if(un) {
         svmp.User.findUserWithPromise({username: un})
             .then(function (userObj) {
+                if (!userObj) {
+                    svmp.logger.error("setUpVm failed to find user");
+                    res.json(404, {msg: "User not found"});
+                }
                 // before we proceed, validate some user properties first
-                if (svmp.config.get('new_vm_defaults:images')[userObj.device_type] === undefined)
+                else if (svmp.config.get('new_vm_defaults:images')[userObj.device_type] === undefined)
                     throw new Error("User '" + userObj.username + "' has an unknown device type '" + userObj.device_type + "'");
                 else if (userObj.volume_id === '')
                     throw new Error("User '" + userObj.username + "' does not have a Volume ID");
-                return userObj;
-            }).then(svmp.cloud.setUpUser)
-            .then(function (userObj) {
-                //userObj.vm_port = svmp.config.get('vm_port');
-                // for some reason, setting a property on userObj doesn't stick - make a new object instead
-                var obj = {
-                    'vm_ip': userObj.vm_ip,
-                    'vm_port': svmp.config.get('vm_port')
-                };
-                res.json(200, obj);
+                else {
+                    return svmp.cloud.setUpUser(userObj)
+                    .then(function (userObj) {
+                        //userObj.vm_port = svmp.config.get('vm_port');
+                        // for some reason, setting a property on userObj doesn't stick - make a new object instead
+                        var obj = {
+                            'vm_ip': userObj.vm_ip,
+                            'vm_port': svmp.config.get('vm_port')
+                        };
+                        res.json(200, obj);
+                    }); // don't catch errors here
+                }
             }).catch(function (err) {
-                svmp.logger.error("setUpVm failed:", err);
-                res.send(500);
+                svmp.logger.error("setUpVm failed:", err.message);
+                res.json(500, {});
             }).done();
     }
 };
@@ -62,7 +68,7 @@ exports.listImages = function (req, res) {
     svmp.cloud.getFlavors(function (err, allflavors) {
 
         if (err) {
-            svmp.logger.error("listImages failed to get flavors:", err);
+            svmp.logger.error("listImages failed to get flavors:", err.message);
             res.json(500, {msg: "Error listing Cloud Flavors"});
         } else {
             for (var i = 0; i < allflavors.length; i++) {
@@ -72,7 +78,7 @@ exports.listImages = function (req, res) {
             svmp.cloud.getImages(function (err, r) {
 
                 if (err) {
-                    svmp.logger.error("listImages failed to get images:", err);
+                    svmp.logger.error("listImages failed to get images:", err.message);
                     res.json(500, {msg: "Error listing Cloud Images"});
                 } else {
                     for (i = 0; i < r.length; i++) {
@@ -103,7 +109,7 @@ exports.listVolumes = function (req, res) {
     var results = [];
     svmp.cloud.getVolumes(function (err, r) {
         if (err) {
-            svmp.logger.error("listVolumes failed:", err);
+            svmp.logger.error("listVolumes failed:", err.message);
             res.json(500, {msg: "Problem listing volumes"});
         } else {
             //console.log(r);
@@ -124,23 +130,35 @@ exports.listVolumes = function (req, res) {
  */
 exports.createVolume = function (req, res) {
     var jsonObj = req.body;
+    if (!jsonObj.username) {
+        res.json(400, {msg: 'Missing required fields'});
+        return;
+    }
+
     svmp.User.findUserWithPromise(jsonObj)
-        .then(svmp.cloud.createVolumeForUser)
-        .then(function(userObj) {
-            var u = userObj.user;
-            svmp.User.update({username: u.username}, {volume_id: u.volume_id}, function (err, numberAffected, raw) {
-                if (err) {
-                    svmp.logger.error("createVolume failed to find user:", err);
-                    res.json(404, {msg: "User not found"});
-                } else {
-                    if (numberAffected === 1) {
-                        res.send(200);
-                    }
-                }
-            })
+        .then(function (userObj) {
+            if (!userObj) {
+                svmp.logger.error("createVolume failed to find user");
+                res.json(404, {msg: "User not found"});
+            } else {
+                return svmp.cloud.createVolumeForUser(userObj)
+                .then(function(userObj) {
+                    var u = userObj.user;
+                    svmp.User.update({username: u.username}, {volume_id: u.volume_id}, function (err, numberAffected, raw) {
+                        if (err) {
+                            svmp.logger.error("createVolume failed to find user:", err.message);
+                            res.json(404, {msg: "User not found"});
+                        } else {
+                            if (numberAffected === 1) {
+                                res.json(200, {});
+                            }
+                        }
+                    })
+                }); // dont catch errors here
+            }
         })
         .catch(function (err){
-            svmp.logger.error("createVolume failed:", err);
+            svmp.logger.error("createVolume failed:", err.message);
             res.json(500, {msg: "Problem creating Volume for user"});
         }).done();
 };
@@ -155,14 +173,19 @@ exports.assignVolume = function (req, res) {
     var requestObj = req.body;
     if( requestObj.username && requestObj.volid) {
         svmp.User.findUserWithPromise({username: requestObj.username})
-            .then(function (user) {
-                user.volume_id = requestObj.volid;
-                return svmp.User.updateUserWithPromise(user);
-            })
-            .then(function (u) {
-                res.send(200);
+            .then(function (userObj) {
+                if (!userObj) {
+                    svmp.logger.error("assignVolume failed to find user");
+                    res.json(404, {msg: "User not found"});
+                } else {
+                    userObj.volume_id = requestObj.volid;
+                    return svmp.User.updateUserWithPromise(userObj)
+                    .then(function (u) {
+                        res.json(200, {});
+                    });
+                }
             }).catch(function (err) {
-                svmp.logger.error("assignVolume failed:", err);
+                svmp.logger.error("assignVolume failed:", err.message);
                 res.json(500,{msg: "Error assigning volume"});
             }).done();
 
