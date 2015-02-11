@@ -125,6 +125,16 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
         //$scope.credentials = {device_type: 'Nexus 7'};
 
         $scope.signup = function () {
+            // validate the password length/complexity;
+            // this is only for user convenience, validation also takes place on the server side
+            // password must be 8+ characters
+            // password must contain one upper case letter, one lower case letter, one digit, and one special character of !@#$%&*()
+            var regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/;
+            if (!regExp.test($scope.credentials.password)) {
+                $scope.error = "Your password does not meet complexity requirements, please try again!";
+                return;
+            }
+
             $http.post('/auth/signup', $scope.credentials).success(function (response) {
                 //If successful we assign the response to the global user model
                 $scope.authentication.user = response;
@@ -166,6 +176,16 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
         // Change user password
         $scope.changeUserPassword = function () {
             $scope.success = $scope.error = null;
+
+            // validate the password length/complexity;
+            // this is only for user convenience, validation also takes place on the server side
+            // password must be 8+ characters
+            // password must contain one upper case letter, one lower case letter, one digit, and one special character of !@#$%&*()
+            var regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/;
+            if (!regExp.test($scope.passwordDetails)) {
+                $scope.error = "Your password does not meet complexity requirements, please try again!";
+                return;
+            }
 
             $http.post('/users/password', $scope.passwordDetails).success(function (response) {
                 // If successful show success message and clear form
