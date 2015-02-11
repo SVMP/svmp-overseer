@@ -35,7 +35,7 @@ describe("Client Account", function () {
     describe("Authentication/Login", function () {
         it('should login user with password and return token in body', function (done) {
             app.post('/login')
-                .send({username: 'dave', password: 'dave12345678'})
+                .send({username: 'dave', password: 'dave12345678!A'})
                 .expect(function (res) {
                     assert.ok(res.body.sessionInfo.token);
                     assert.ok(res.body.webrtc);
@@ -69,7 +69,7 @@ describe("Client Account", function () {
 
         it('should send 403 on password_needs_changed = true', function (done) {
             app.post('/login')
-                .send({username: 'bob', password: 'bob12345678'})
+                .send({username: 'bob', password: 'bob12345678!A'})
                 .expect(403, done);
         });
     });
@@ -82,13 +82,13 @@ describe("Client Account", function () {
             app.post('/changePassword')
                 .send({
                     username: 'dave',
-                    password: 'dave12345678',
-                    newPassword: 'dave22222222'
+                    password: 'dave12345678!A',
+                    newPassword: 'dave22222222!A'
                 })
                 .expect(200, function() {
                     // at this point, we have changed the password; see if we can log in now
                     app.post('/login')
-                        .send({username: 'dave', password: 'dave22222222'})
+                        .send({username: 'dave', password: 'dave22222222!A'})
                         .expect(200, done);
                 });
         });
@@ -107,7 +107,7 @@ describe("Client Account", function () {
             app.post('/changePassword')
                 .send({
                     username: 'dave',
-                    password: 'dave12345678',
+                    password: 'dave12345678!A',
                     newPassword: '2short'
                 })
                 .expect(400, done);

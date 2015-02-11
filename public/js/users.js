@@ -159,7 +159,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
                 }
 
             }).error(function (response) {
-                $scope.error = "There was a problem! Bad Username and/or Password";
+                $scope.error = response.message;
             });
         };
     }

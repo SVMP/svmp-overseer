@@ -31,7 +31,7 @@ beforeEach(function(done){
 
         new svmp.User({
             username: 'dave',
-            password: 'dave12345678',
+            password: 'dave12345678!A',
             email: 'dave@here.com',
             password_change_needed: false,
             device_type: 'a_device',
@@ -39,7 +39,7 @@ beforeEach(function(done){
         }).save(function(){
                 new svmp.User({
                     username: 'bob',
-                    password: 'bob12345678',
+                    password: 'bob12345678!A',
                     email: 'bob@here.com',
                     password_change_needed: true,
                     device_type: 'a_device',

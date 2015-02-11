@@ -70,7 +70,7 @@ describe("Services", function () {
         it('should add a user', function(done) {
             app.post('/services/user')
                 .set('svmp-authtoken',admin_token)
-                .send({user: {username: 'carl', password: 'carl12345678', email: 'carl@here.com', device_type: 'abc'}})
+                .send({user: {username: 'carl', password: 'carl12345678!A', email: 'carl@here.com', device_type: 'abc'}})
                 .expect(function(res) {
                     app.get('/services/users')
                         .set('svmp-authtoken',admin_token)
@@ -86,7 +86,7 @@ describe("Services", function () {
         it('should fail to add a user when missing fields', function(done) {
             app.post('/services/user')
                 .set('svmp-authtoken',admin_token)
-                .send({user: {username: 'carl', password: 'carl12345678',device_type: 'abc'}})
+                .send({user: {username: 'carl', password: 'carl12345678!A',device_type: 'abc'}})
                 .expect(400,done);
 
         });
