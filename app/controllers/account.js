@@ -41,10 +41,21 @@ var
 exports.login = function(req,res) {
     // use loaded strategy for authentication
     res.logUsername = req.body.username;
+
+    // check to see if this user account is currently locked
+    var error = svmp.lockout.checkForLock(req.body.username);
+    if (error) {
+        res.logMessage = error;
+        res.json(401,{msg: error});
+        return;
+    }
+
     strategy(req,function(errCode,result) {
         if(errCode) {
             res.logMessage = 'Invalid login credentials';
             res.json(errCode,{msg: 'Error authenticating'});
+            // report a failed login attempt
+            svmp.lockout.failedAttempt(req.body.username);
         } else {
             res.logMessage = 'Login successful';
             sendToken(res, result);

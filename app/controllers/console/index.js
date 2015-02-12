@@ -105,9 +105,20 @@ exports.signup = function (req, res) {
  * Signin after passport authentication
  */
 exports.signin = function (req, res, next) {
+    // check to see if this user account is currently locked
+    var error = svmp.lockout.checkForLock(req.body.username);
+    if (error) {
+        res.json(401,{message: error});
+        return;
+    }
+
     passport.authenticate('local', function (err, user, info) {
-        if (err || !user) {
+        if (err) {
             res.send(400, info);
+        } else if (!user) {
+            // failed authentication
+            res.send(401, info); // info is something like {message: "Invalid password"}
+            svmp.lockout.failedAttempt(req.body.username);
         } else {
             // Remove sensitive data before login
             user.password = undefined;
@@ -115,7 +126,8 @@ exports.signin = function (req, res, next) {
 
             req.login(user, function (err) {
                 if (err) {
-                    res.send(400, err);
+                    res.send(401, {message: error});
+                    svmp.lockout.failedAttempt(req.body.username);
                 } else {
                     res.jsonp(user);
                 }

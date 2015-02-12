@@ -95,7 +95,7 @@
         if (ev.code === 1006 && protocol === "wss" && window.svmpState === "auth") {
             msg += "\n"
                     + "(If you're using a self-signed certificate, navigate to '"
-                    + "http://" + window.svmpData.server.host + ":" + window.svmpData.server.port
+                    + "https://" + window.svmpData.server.host + ":" + window.svmpData.server.port
                     + "' in a new tab, accept the certificate, and try again)";
         }
 
