@@ -462,24 +462,26 @@ var CTRL_DOWN = false;
 var ALT_DOWN = false;
 
 // arguments to create a button request
+// when received by SVMPD, gets translated into a KeyEvent
+// see http://developer.android.com/reference/android/view/KeyEvent.html
 var buttonRequestArg = {
     eventTime: {
         low: 0,
         high: 0,
         unsigned: false
     },
-    deviceId: 2,
-    flags: 72,
+    deviceId: 2, // the id for the device that this came from; an id greater than zero is arbitrary
+    flags: 8, // KeyEvent.FLAG_FROM_SYSTEM
     downTime: {
         low: 0,
         high: 0,
         unsigned: false
     },
-    action: 0,
+    action: 0, // KeyEvent.ACTION_DOWN
     repeat: 0,
-    metaState: 0,
-    scanCode: 158,
-    source: 257
+    metaState: 0, // changes with Shift, Ctrl, and/or Alt
+    scanCode: 158, // stub; the hardware key id of this key event, these values are not reliable and vary from device to device
+    source: 257 // InputDevice.SOURCE_KEYBOARD
 };
 
 // used for buttons (Back, Home, App Switch)
@@ -510,7 +512,7 @@ function androidKeyUp(buttonCode, ws, svmp, isButton) {
         return;
     var buttonRequest = new svmp.Request({type: svmp.Request.RequestType.KEYEVENT, key: buttonRequestArg});
     buttonRequest.key.code = buttonCode;
-    buttonRequest.key.action = 1;
+    buttonRequest.key.action = 1; // KeyEvent.ACTION_UP
 
     // if this is not a button (it's a keyboard key), add any modifiers
     if (!isButton)
