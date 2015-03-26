@@ -9,11 +9,11 @@
 <body>
 <div id="content">
     <table style="margin-left:auto; margin-right:auto; text-align:center">
-        <tr><td>
+        <tr><td colspan="2">
             <video id="rtcvidstream" class="hide" autoplay></video>
             <canvas id="touchcanvas" class="hide" style="border:2px solid black"></canvas>
         </td></tr>
-        <tr><td>
+        <tr><td colspan="2">
             <div class="btn-group btn-group-justified btn-group-lg" style="table-layout:auto">
                 <a href="#" id="backButton" class="btn btn-default" style="width:33.3%" title="Back">
                     <span class="glyphicon glyphicon-chevron-left"></span>
@@ -27,6 +27,11 @@
             </div>
         </td></tr>
         <tr><td>
+            <br />
+            <label class="btn btn-toggle" for="keyboard-toggle">
+                <input type="checkbox" id="keyboard-toggle" />Soft Keyboard
+            </label>
+            </td><td>
             <br />
             <button id="logoutButton" type="button" class="btn btn-lg btn-danger">Log Out</button>
         </td></tr>
@@ -142,48 +147,30 @@
     canvas.addEventListener("mousemove", function(ev) { handleMouseMove(ev, ws, svmp) }, false);
     canvas.addEventListener("mouseout", function(ev) { handleMouseEnd(ev, ws, svmp) }, false);
 
+    // capture keyboard events
+    $(document).keydown(function(event) {
+        // keydown, NOT keypress, there is a difference
+        handleKeyDown(event, ws, svmp);
+    });
+    $(document).keyup(function(event) {
+        handleKeyUp(event, ws, svmp);
+    });
+
     // set up Android button listeners
     $("#backButton").click(function() {
-        androidButton(4);
+        androidKeyDownUp(4, ws, svmp);
     });
     $("#homeButton").click(function() {
-        androidButton(3);
+        androidKeyDownUp(3, ws, svmp);
     });
     $("#appSwitchButton").click(function() {
-        androidButton(187);
+        androidKeyDownUp(187, ws, svmp);
     });
-    function androidButton(buttonCode) {
-        if (window.svmpState !== "running")
-            return;
-        var buttonRequest = new svmp.Request({
-            type: svmp.Request.RequestType.KEYEVENT,
-            key: {
-                eventTime: {
-                    low: 0,
-                    high: 0,
-                    unsigned: false
-                },
-                deviceId: 2,
-                flags: 72,
-                downTime: {
-                    low: 0,
-                    high: 0,
-                    unsigned: false
-                },
-                action: 0,
-                code: buttonCode,
-                repeat: 0,
-                metaState: 0,
-                scanCode: 158,
-                source: 257
-            }
-        });
-        // send button down
-        window.socket.send(buttonRequest.encodeDelimited().toArrayBuffer());
-        // send button up
-        buttonRequest.key.action = 1;
-        window.socket.send(buttonRequest.encodeDelimited().toArrayBuffer());
-    }
+
+    // soft keyboard button listener
+    $("#keyboard-toggle").click(function() {
+        sendKeyboardConfig(this.checked, ws, svmp);
+    });
 </script>
 
 </body>

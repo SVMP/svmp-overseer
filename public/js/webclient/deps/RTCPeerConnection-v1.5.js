@@ -136,14 +136,39 @@ function RTCPeerConnection(options) {
         peer.createOffer(function(sessionDescription) {
             sessionDescription.sdp = setBandwidth(sessionDescription.sdp);
             // remove opus
-            var tmp1 = sessionDescription.sdp.replace("a=rtpmap:111 opus/48000/2\r\n","");
+            // as of March 2015, string should look like this: "a=rtpmap:111 opus/48000/2\r\n"
+            var tmp1 = removeSubstring(sessionDescription.sdp, "a=rtpmap:111", "\r\n");
             // remove fmtp line referring to OPUS
-            var tmp2 = tmp1.replace("a=fmtp:111 minptime=10\r\n","");
+            // as of March 2015, string should look like this: "a=fmtp:111 minptime=10; useinbandfec=1\r\n"
+            var tmp2 = removeSubstring(tmp1, "a=fmtp:111", "\r\n");
             sessionDescription.sdp = tmp2;
             peer.setLocalDescription(sessionDescription);
             options.onOfferSDP(sessionDescription);
             console.debug('offer-sdp', sessionDescription.sdp);
         }, onSdpError, constraints);
+    }
+
+    // removes a substring beginning with X and ending with Y, logs an error if substring isn't found
+    // we need to use this to manipulate the WebRTC SDP offer, because browser support rapidly changes and
+    // the substring we're looking for may not stay exactly the same
+    function removeSubstring(string, start, end) {
+        var result = null;
+        // because regular expressions are hard... let's just do this with JavaScript string functions
+        var startIndex = string.indexOf(start);
+        if (startIndex >= 0) {
+            var endIndex = string.indexOf(end, startIndex);
+            if (endIndex >= 0) {
+                endIndex += end.length;
+                result = string.substring(0, startIndex) + string.substring(endIndex);
+                console.debug("Removing substring from SDP offer: '" + string.substring(startIndex, endIndex) + "'");
+            }
+        }
+        if (result === null) {
+            console.error("Unable to find and remove substring starting with '" + start + "' from SDP offer!");
+            return string;
+        }
+        else
+            return result;
     }
 
     // onAnswerSDP(RTCSessionDescription)
